@@ -139,13 +139,14 @@ svg.f{fill:currentColor;stroke:none}
 .modal.on{display:block}
 .modal .sheet{
   --hdr:60px;   /* ارتفاع رأس تضمين إنستغرام الذي يُخفى (عدّليه إن ظهر جزء منه) */
-  --ftr:170px;  /* ارتفاع ذيل التضمين الذي يُخفى */
-  position:absolute;left:50%;top:max(10px,env(safe-area-inset-top,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));
-  width:min(440px,calc(100% - 52px));max-height:900px;
-  transform:translateX(-50%);background:#0b0f14;border-radius:22px;overflow:hidden;direction:ltr;color:#fff;
+  --ftr:420px;  /* ارتفاع ذيل التضمين الذي يُخفى (كبير عمداً ليغطي أي حجم) */
+  --ratio:515/635; /* نسبة عرض/ارتفاع منطقة الفيديو كما في التصميم المعتمد — عدّليها إن ظهر أو اختفى جزء من الفيديو */
+  position:absolute;left:50%;top:50%;
+  width:min(440px,calc(100% - 52px));max-height:calc(100vh - 28px);max-height:calc(100dvh - 28px);
+  transform:translate(-50%,-50%);background:#0b0f14;border-radius:22px;overflow:hidden;direction:ltr;color:#fff;
   display:flex;flex-direction:column;
   box-shadow:0 18px 60px rgba(0,0,0,.45),0 2px 10px rgba(0,0,0,.2);
-  animation:sheetUp .38s cubic-bezier(.2,.8,.2,1);
+  animation:sheetPop .32s ease;
 }
 .modal .mbar{flex:none;height:52px;display:flex;align-items:center;gap:10px;padding:0 10px 0 14px;background:#ececec;color:#111}
 .modal .mbar img{width:34px;height:34px;border-radius:50%;object-fit:contain;background:#fff;flex:none}
@@ -155,27 +156,20 @@ svg.f{fill:currentColor;stroke:none}
 .modal .mbar .sp{flex:1}
 .modal .x{width:34px;height:34px;border:0;border-radius:8px;background:var(--brand);color:#fff;font:700 17px/1 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
 .modal .x:hover{background:var(--brand-dark)}
-.modal .stage{position:relative;flex:1;min-height:0;overflow:hidden;background:#000}
+.modal .stage{position:relative;flex:0 1 auto;width:100%;aspect-ratio:var(--ratio);min-height:0;overflow:hidden;background:#000}
 .modal .stage iframe{position:absolute;left:0;top:calc(var(--hdr) * -1);width:100%;height:calc(100% + var(--hdr) + var(--ftr));border:0;background:#000}
 .modal .ov{position:absolute;inset:0;pointer-events:none}
-.modal .ov::after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)}
-.modal .acts{position:absolute;right:10px;bottom:14px;z-index:1;display:flex;flex-direction:column;align-items:center;gap:16px}
-.modal .act{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-.modal .act svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.modal .acts{position:absolute;right:0;bottom:6%;width:12.6%;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px}
+.modal .act{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;font-weight:600}
+.modal .act span:empty{display:none}
+.modal .act svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .modal .act.like svg{fill:#ff2d4d;stroke:#ff2d4d}
-.modal .cap{position:absolute;left:14px;right:70px;bottom:14px;z-index:1;display:flex;flex-direction:column;gap:8px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
-.modal .cap .who{display:flex;align-items:center;gap:9px;font-size:13.5px;font-weight:600}
-.modal .cap .who img{width:30px;height:30px;border-radius:50%;background:#fff;object-fit:contain;padding:2px}
-.modal .cap .who i{font-style:normal;border:1px solid rgba(255,255,255,.7);border-radius:7px;padding:2px 10px;font-size:12px}
+.modal .cap{position:absolute;left:14px;right:14%;bottom:14px;z-index:1;display:flex;flex-direction:column;gap:8px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .modal .cap p{margin:0;font-size:12.5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .modal .cap p:empty{display:none}
 .modal .cmt{flex:none;display:block;background:#0b0f14;padding:10px 14px 12px;text-decoration:none}
 .modal .cmt span{display:block;background:#1c232b;color:#cfd5dc;border-radius:999px;padding:14px 22px;font-size:14px;text-align:left}
-@keyframes sheetUp{from{opacity:0;transform:translate(-50%,40px)}to{opacity:1;transform:translate(-50%,0)}}
-@media (min-width:600px){
-  .modal .sheet{top:50%;bottom:auto;height:min(88vh,860px);transform:translate(-50%,-50%);animation:sheetPop .3s ease}
-  @keyframes sheetPop{from{opacity:0;transform:translate(-50%,-48%)}to{opacity:1;transform:translate(-50%,-50%)}}
-}
+@keyframes sheetPop{from{opacity:0;transform:translate(-50%,-47%)}to{opacity:1;transform:translate(-50%,-50%)}}
 
 
 /* sub pages */
@@ -343,7 +337,6 @@ footer a{color:var(--brand);font-weight:600}
       <div class="ov">
         <div class="acts" id="macts"></div>
         <div class="cap">
-          <div class="who"><img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt=""><span>getincanada</span><i>Follow</i></div>
           <p id="mcap"></p>
         </div>
       </div>
