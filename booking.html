@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Book Your Consultation | Get In Canada</title>
+<style>
+  :root{
+    --pad: 80px;
+    --form-w: 700px;
+    --form-h: 560px;
+    --top: 1140px;
+    --brand: #d1070f;
+  }
+  @media (max-width: 800px){
+    :root{
+      --pad: 40px;
+      --form-w: 360px;
+      --form-h: 740px;  /* ضع قيمتك المضبوطة هنا */
+      --top: 1270px;    /* ضع قيمتك المضبوطة هنا */
+    }
+  }
+
+  html,body{margin:0;background:#fff}
+  body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+       font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+
+  .logo{margin:32px 0 0;text-align:center}
+  .logo img{height:90px;width:auto}
+
+  /* شريط الخطوات: للجوال فقط */
+  .steps-wrap{display:none;width:100%;max-width:408px;box-sizing:border-box;padding:0 20px}
+  .steps-title{margin:22px 0 14px;text-align:center;font-size:15px;font-weight:700;color:#1f2d3d}
+  .steps{list-style:none;margin:0;padding:0;display:flex}
+  .steps li{flex:1;position:relative;text-align:center;font-size:12px;line-height:1.35;color:#3a4756}
+  .steps li span{
+    position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
+    width:28px;height:28px;margin:0 auto 6px;border-radius:50%;
+    background:var(--brand);color:#fff;font-weight:700;font-size:13px;
+  }
+  /* الخط الواصل بين الخطوات (من اليسار إلى اليمين) */
+  .steps li:not(:last-child)::after{
+    content:"";position:absolute;top:13px;left:50%;width:100%;height:2px;background:#f0c4c6;
+  }
+  @media (max-width: 800px){ .steps-wrap{display:block} }
+
+  .crop{
+    position:relative;
+    width:min(100%, calc(var(--form-w) + var(--pad) * 2));
+    height:calc(var(--form-h) + var(--pad) * 2);
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+  }
+  .crop iframe{
+    width:var(--form-w);
+    flex:none;
+    height:3500px;
+    margin-top:calc((var(--top) - var(--pad)) * -1);
+    border:0;
+    display:block;
+    opacity:0;
+    transition:opacity .5s ease;
+  }
+  .crop.ready iframe{opacity:1}
+
+  .loader{
+    position:absolute;inset:0;background:#fff;
+    display:flex;flex-direction:column;align-items:center;
+    justify-content:flex-start;padding-top:110px;gap:14px;
+    color:#666;font-size:14px;transition:opacity .4s ease;
+  }
+  .crop.ready .loader{opacity:0;pointer-events:none}
+  .spinner{width:36px;height:36px;border:3px solid #eee;
+           border-top-color:var(--brand);border-radius:50%;
+           animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+  <div class="logo">
+    <img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada">
+  </div>
+
+  <div class="steps-wrap">
+    <p class="steps-title">Book Your Consultation in 4 Simple Steps</p>
+    <ol class="steps">
+      <li><span>1</span>Service Selection</li>
+      <li><span>2</span>Date &amp; Time</li>
+      <li><span>3</span>Your Information</li>
+      <li><span>4</span>Payments</li>
+    </ol>
+  </div>
+
+  <div class="crop">
+    <iframe src="https://booking.getincanada.ca/" scrolling="no"
+            title="Booking form" allow="payment"></iframe>
+    <div class="loader">
+      <div class="spinner"></div>
+      <span>Loading booking form…</span>
+    </div>
+  </div>
+
+<script>
+  const SETTLE_MS   = 1500;
+  const MAX_WAIT_MS = 9000;
+  const crop  = document.querySelector('.crop');
+  const frame = crop.querySelector('iframe');
+  const show  = () => crop.classList.add('ready');
+  frame.addEventListener('load', () => setTimeout(show, SETTLE_MS));
+  setTimeout(show, MAX_WAIT_MS);
+</script>
+</body>
+</html>

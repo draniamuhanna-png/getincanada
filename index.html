@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get In Canada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#d6000b;
+  --brand-dark:#b00009;
+  --ink:#1f2d3d;
+  --muted:#4a5666;
+  --soft:#f1f1f1;
+  --card:#fff;
+  --radius:12px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:#fff;color:var(--ink);
+  font-family:"Cairo","Inter",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  line-height:1.6;
+}
+html[lang="en"] body{font-family:"Inter","Cairo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+svg.f{fill:currentColor;stroke:none}
+
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px 40px}
+
+/* top bar */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0 0;min-height:60px}
+.chip{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:36px;height:36px;padding:0 10px;border:0;border-radius:6px;
+  background:var(--brand);color:#fff;font-weight:700;font-size:15px;
+}
+.chip svg{font-size:20px}
+[dir="rtl"] .back svg{transform:scaleX(-1)}
+.back svg{transform:none}
+[dir="rtl"] .back svg{transform:none}
+/* arrow icon points "left" by default; in RTL flip so it points right (back direction) */
+[dir="rtl"] .back svg{transform:scaleX(-1)}
+
+/* views */
+.view{display:none}
+.view.on{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* hero */
+.hero{text-align:center}
+.hero img.logo{height:120px;width:auto;margin-top:-18px}
+.hero h1{margin:14px 0 10px;font-size:26px;font-weight:800;color:#2b2b2b}
+.hero h1::after{content:"";display:block;width:64px;height:2px;background:var(--brand);margin:12px auto 0}
+.hero p{margin:18px auto 0;max-width:640px;font-size:16px;color:#333;line-height:1.95}
+
+/* services */
+.services-wrap{margin-top:34px}
+.services{
+  display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:14px 4px 20px;margin:0 -20px;padding-inline:20px;
+  scrollbar-width:none;
+}
+.services::-webkit-scrollbar{display:none}
+.svc{
+  flex:0 0 210px;scroll-snap-align:center;
+  background:var(--card);border-radius:var(--radius);padding:24px 22px 26px;
+  box-shadow:0 4px 18px rgba(20,30,50,.07);
+  transition:background .25s,color .25s,transform .25s,box-shadow .25s;
+  min-height:248px;
+}
+.svc .ico{font-size:40px;color:var(--brand);display:block;margin-bottom:18px;transition:color .25s}
+.svc h3{margin:0 0 8px;font-size:17px;font-weight:700;color:#1b2a3a;transition:color .25s}
+.svc p{margin:0;font-size:13px;line-height:1.75;color:var(--muted);transition:color .25s}
+.svc.active{background:var(--brand);box-shadow:0 10px 26px rgba(214,0,11,.3);transform:translateY(-4px)}
+.svc.active .ico,.svc.active h3,.svc.active p{color:#fff}
+.dots{display:flex;justify-content:center;gap:8px;margin-top:2px}
+.dots button{width:11px;height:11px;border-radius:50%;border:0;padding:0;background:#d8d8d8}
+.dots button.on{background:var(--brand)}
+
+@media (min-width:900px){
+  .services{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;overflow:visible;margin:0;padding:10px 0 20px}
+  .svc{flex:none;min-height:230px}
+  .svc:hover{background:var(--brand);box-shadow:0 10px 26px rgba(214,0,11,.3);transform:translateY(-4px)}
+  .svc:hover .ico,.svc:hover h3,.svc:hover p{color:#fff}
+  .svc.active:not(:hover){background:var(--card);box-shadow:0 4px 18px rgba(20,30,50,.07);transform:none}
+  .svc.active:not(:hover) .ico{color:var(--brand)}
+  .svc.active:not(:hover) h3{color:#1b2a3a}
+  .svc.active:not(:hover) p{color:var(--muted)}
+  .dots{display:none}
+}
+
+/* CTA */
+.cta{
+  display:flex;align-items:center;gap:18px;margin-top:18px;
+  background:var(--brand);color:#fff;border-radius:10px;padding:22px 24px;
+  box-shadow:0 8px 22px rgba(214,0,11,.25);transition:background .2s,transform .2s;
+}
+.cta:hover{background:var(--brand-dark);transform:translateY(-2px)}
+.cta .ico{font-size:54px;flex:none}
+.cta b{display:block;font-size:30px;font-weight:800;line-height:1.25}
+.cta span{display:block;font-size:15px;opacity:.95;margin-top:2px}
+@media (max-width:600px){.cta b{font-size:24px}.cta .ico{font-size:46px}.cta{padding:20px}}
+
+/* list buttons */
+.grid2{display:grid;gap:16px;margin-top:22px}
+@media (min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+.row{
+  display:flex;align-items:center;gap:18px;width:100%;
+  background:var(--soft);border:0;border-radius:10px;padding:20px 24px;text-align:start;color:inherit;
+  transition:background .2s,transform .2s;
+}
+.row:hover{background:#e8e8e8;transform:translateY(-2px)}
+.row .ico{font-size:40px;color:var(--brand);flex:none}
+.row b{display:block;font-size:22px;font-weight:700;color:#3a3a3a;line-height:1.3}
+.row span{display:block;font-size:15px;color:#555;margin-top:2px}
+
+/* videos */
+.vhead{display:flex;align-items:center;gap:14px;margin:42px 0 18px}
+.vhead .ico{font-size:38px;color:var(--brand)}
+.vhead h2{margin:0;font-size:23px;font-weight:700;color:#3a3a3a;flex:1}
+.vhead small{font-size:14px;color:#444}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (min-width:760px){.vgrid{gap:22px;max-width:760px;margin:0 auto}}
+.reel{
+  position:relative;aspect-ratio:9/13.2;border-radius:12px;overflow:hidden;border:0;padding:0;
+  background:linear-gradient(160deg,#2a1a3a,#7a0f19 60%,#d6000b);color:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.18);transition:transform .2s;
+}
+.reel:hover{transform:translateY(-3px)}
+.reel img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.reel .play{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(to top,rgba(0,0,0,.5),transparent 55%);
+}
+.reel .play i{
+  width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.92);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;font-size:24px;font-style:normal;
+}
+.reel .views{position:absolute;bottom:8px;inset-inline-start:10px;font-size:12px;font-weight:600;direction:ltr}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.on{display:flex}
+.modal .box{position:relative;width:min(420px,100%);height:min(86vh,760px);background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.modal iframe{flex:1;border:0;width:100%}
+.modal .x{position:absolute;top:8px;inset-inline-end:8px;z-index:2;width:36px;height:36px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center}
+.modal .open{display:block;text-align:center;padding:11px;font-size:14px;font-weight:700;color:var(--brand);background:#fafafa;border-top:1px solid #eee}
+
+/* sub pages */
+.sub{max-width:640px;margin:0 auto}
+.sub .head{text-align:center;padding:8px 0 26px}
+.sub .head img{height:92px;width:92px;object-fit:contain;background:#fff;border:3px solid var(--brand);border-radius:50%;padding:10px;box-shadow:0 8px 22px rgba(0,0,0,.1)}
+.sub h2{margin:16px 0 4px;font-size:28px;font-weight:800;color:#2b2b2b}
+.sub .head p{margin:0;color:#666}
+.link{
+  display:flex;align-items:center;gap:16px;background:#fff;border:1px solid #e3e3e3;border-radius:16px;
+  padding:18px 20px;margin-bottom:14px;transition:box-shadow .2s,transform .2s;
+}
+.link:hover{box-shadow:0 8px 20px rgba(0,0,0,.08);transform:translateY(-2px)}
+.link .badge{width:52px;height:52px;border-radius:12px;background:#fdecec;color:var(--brand);display:flex;align-items:center;justify-content:center;font-size:26px;flex:none}
+.link b{display:block;font-size:19px;font-weight:700}
+.link span{display:block;color:#666;font-size:14px}
+.link .num{direction:ltr;unicode-bidi:embed;display:inline-block}
+html[dir="rtl"] .link .num{text-align:right}
+
+/* faq */
+.faq-intro{color:#444;font-size:15px;margin:0 0 20px;text-align:center}
+.acc{border:0;margin:0 0 10px;border-radius:8px;overflow:hidden}
+.acc>button{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--brand);color:#fff;border:0;padding:15px 18px;text-align:start;font-weight:700;font-size:15px;
+}
+.acc>button i{font-style:normal;font-size:22px;line-height:1;flex:none}
+.acc .body{display:none;padding:14px 18px;background:#fafafa;border:1px solid #eee;border-top:0;font-size:14.5px;color:#333;line-height:1.9}
+.acc.open .body{display:block}
+.acc .body a{color:var(--brand);text-decoration:underline;font-weight:600}
+.faq-end{margin-top:34px;background:#2a4357;border-radius:12px;padding:26px 16px;text-align:center;color:#fff}
+.faq-end h3{margin:0 0 6px;font-size:22px}
+.faq-end p{margin:0 0 14px;font-weight:700;letter-spacing:.5px}
+.faq-end a{display:inline-block;background:#fff;color:var(--ink);border-radius:8px;padding:10px 22px;font-weight:800;font-size:14px}
+
+footer{margin-top:34px;text-align:center;font-size:13px;color:#777}
+footer a{color:var(--brand);font-weight:600}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></symbol>
+    <symbol id="dollar" viewBox="0 0 24 24"><circle cx="12" cy="9" r="6.5"/><path d="M12 5.5v7M14 7.2c-.6-.6-3.6-.9-3.6.9 0 1.9 3.6 1 3.6 2.9 0 1.7-3 1.5-3.8.7M3 17.5h18v3H3z"/></symbol>
+    <symbol id="users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.8a3.4 3.4 0 0 1 0 6.4M18 14.2c2.1.6 3.5 2.4 3.5 5.8"/></symbol>
+    <symbol id="send" viewBox="0 0 24 24"><path d="M21 3 3 10.5l7 3 3 7z"/><path d="m10 13.5 11-10.5"/></symbol>
+    <symbol id="cap" viewBox="0 0 24 24"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.5 6-3v-4.5M22 9v6"/></symbol>
+    <symbol id="home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v10H3z"/><path d="M9.5 21v-7h5v7"/></symbol>
+    <symbol id="cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="M12 12.5a2.6 2.6 0 0 1 2.6 2.6v1.6l.9.9H8.5l.9-.9v-1.6A2.6 2.6 0 0 1 12 12.5zM11 18.3h2"/></symbol>
+    <symbol id="share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"/></symbol>
+    <symbol id="reel" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="M3 9h18M9 3l3 6M15 3l3 6"/><path d="m10.5 12.5 4 2.5-4 2.5z"/></symbol>
+    <symbol id="help" viewBox="0 0 24 24"><path d="M3 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H3z"/><path d="M8.2 8.4a1.8 1.8 0 1 1 2.4 1.7c-.5.2-.6.6-.6 1M10 12.6v.1"/><path d="M17 8.5c2.8 0 4 1.6 4 3.5s-1 3-2 3.2V18l-2.5-2"/></symbol>
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M19 12H5M11 5l-7 7 7 7"/></symbol>
+    <symbol id="ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r=".6"/></symbol>
+    <symbol id="wa" viewBox="0 0 24 24"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.6z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/></symbol>
+    <symbol id="play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="currentColor" stroke="none"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <div class="topbar">
+    <a class="chip back" id="backBtn" href="https://getincanada.ca/" aria-label="Back">
+      <svg class="i"><use href="#arrow"/></svg>
+    </a>
+    <button class="chip" id="langBtn" type="button">EN</button>
+  </div>
+
+  <!-- HOME -->
+  <main class="view on" id="v-home">
+    <section class="hero">
+      <img class="logo" src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada">
+      <h1 data-i18n="title"></h1>
+      <p data-i18n="intro"></p>
+    </section>
+
+    <section class="services-wrap">
+      <div class="services" id="services"></div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <a class="cta" href="booking.html">
+      <svg class="i ico"><use href="#cal"/></svg>
+      <div><b data-i18n="cta"></b><span data-i18n="cta2"></span></div>
+    </a>
+
+    <div class="grid2">
+      <a class="row" href="#social">
+        <svg class="i ico"><use href="#share"/></svg>
+        <div><b data-i18n="soc"></b><span data-i18n="soc2"></span></div>
+      </a>
+      <a class="row" href="#faq">
+        <svg class="i ico"><use href="#help"/></svg>
+        <div><b data-i18n="faq"></b><span data-i18n="faq2"></span></div>
+      </a>
+    </div>
+
+    <div class="vhead">
+      <svg class="i ico"><use href="#reel"/></svg>
+      <h2 data-i18n="vids"></h2>
+      <small>2026</small>
+    </div>
+    <div class="vgrid" id="vgrid"></div>
+
+    <footer><a href="https://getincanada.ca/" data-i18n="site"></a></footer>
+  </main>
+
+  <!-- SOCIAL -->
+  <main class="view" id="v-social">
+    <div class="sub">
+      <div class="head">
+        <img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada">
+        <h2 data-i18n="socT"></h2>
+        <p data-i18n="socS"></p>
+      </div>
+      <a class="link" href="https://www.instagram.com/getincanada/reels/" target="_blank" rel="noopener">
+        <div class="badge"><svg class="i"><use href="#ig"/></svg></div>
+        <div><b data-i18n="ig"></b><span class="num">@getincanada</span></div>
+      </a>
+      <a class="link" href="https://wa.me/15145833083" target="_blank" rel="noopener">
+        <div class="badge"><svg class="i"><use href="#wa"/></svg></div>
+        <div><b data-i18n="wa"></b><span class="num">+1 (514) 583-3083</span></div>
+      </a>
+    </div>
+  </main>
+
+  <!-- FAQ -->
+  <main class="view" id="v-faq">
+    <div class="sub">
+      <div class="head">
+        <h2 data-i18n="faq"></h2>
+      </div>
+      <p class="faq-intro" data-i18n="faqIntro"></p>
+      <div id="acc"></div>
+      <div class="faq-end">
+        <h3 data-i18n="elig"></h3>
+        <p>TO GET IN CANADA</p>
+        <a href="booking.html" data-i18n="book"></a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="box">
+    <button class="x" id="mx" type="button" aria-label="Close">✕</button>
+    <iframe id="mf" title="Instagram Reel" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+    <a class="open" id="mo" href="#" target="_blank" rel="noopener" data-i18n="openIg"></a>
+  </div>
+</div>
+
+<script>
+/* ===== قابل للتعديل ===== */
+const SITE = "https://getincanada.ca/";
+const FAQ_PAGE = "https://getincanada.ca/faqs/";
+// لإضافة صورة غلاف: ضع رابطها في cover. لإظهار المشاهدات: ضع الرقم في views مثل "801K"
+const REELS = [
+  { id: "DTsUpkxkVNO", cover: "", views: "" },
+  { id: "DTLQg56iqj3", cover: "", views: "" },
+  { id: "DfXfem0smbH", cover: "", views: "" }
+];
+/* ======================== */
+
+const T = {
+  ar: {
+    title:"نحن خطوتك الأولى للوصول إلى كندا",
+    intro:"مجموعة من خبراء الاستشارة في الهجرة والأعمال التجارية والاستشارات الأكاديمية لتلبية احتياجات كل فرد ومنظمة تستخدم خدماتنا.",
+    cta:"احجز استشارتك الآن!", cta2:"تأمين جلسة استراتيجية الهجرة المرخصة",
+    soc:"وسائل التواصل الاجتماعي", soc2:"إنستغرام وواتساب — كل قنواتنا بمكان واحد",
+    faq:"أسئلة شائعة", faq2:"كل ما تحتاج السؤال عنه في مكان واحد",
+    vids:"أهم فيديوهات أو ريلز",
+    socT:"قنوات التواصل", socS:"تابعنا وتواصل معنا",
+    ig:"إنستغرام", wa:"واتساب",
+    faqIntro:"فريقنا جاهز لإرشادك خلال عملية التقديم لكندا، سواء للعمل أو اللجوء أو الدراسة أو الأعمال.",
+    elig:"اكتشف إن كنت مؤهلاً ←", book:"احجز استشارتك",
+    more:"للاطلاع على الإجابة الكاملة، تفضل بزيارة", moreLink:"صفحة الأسئلة الشائعة في موقعنا",
+    site:"زيارة الموقع الرسمي getincanada.ca", openIg:"فتح على إنستغرام",
+    langBtn:"EN", watch:"تشغيل الريل"
+  },
+  en: {
+    title:"We Are Your First Step to Canada",
+    intro:"A team of immigration, business and academic consulting experts meeting the needs of every individual and organization using our services.",
+    cta:"Book Your Consultation Now!", cta2:"Secure a licensed immigration strategy session",
+    soc:"Social Media", soc2:"Instagram and WhatsApp — all our channels in one place",
+    faq:"FAQs", faq2:"Everything you need to ask, in one place",
+    vids:"Top Videos & Reels",
+    socT:"Our Channels", socS:"Follow us and get in touch",
+    ig:"Instagram", wa:"WhatsApp",
+    faqIntro:"Our team is ready to guide you through Canada's application process — for work, asylum, study or business.",
+    elig:"Find out if you are eligible →", book:"BOOK A CONSULTATION",
+    more:"For the full answer, please visit the", moreLink:"FAQs page on our website",
+    site:"Visit the official website getincanada.ca", openIg:"Open on Instagram",
+    langBtn:"ع", watch:"Play reel"
+  }
+};
+
+const SERVICES = [
+  { i:"globe",  ar:["الهجرة","الحصول على كندا من خلال استكشاف العشرات من الطرق للانتقال إلى كندا."],
+                en:["Immigration","Get to Canada by exploring dozens of pathways for moving there."] },
+  { i:"dollar", ar:["هجرة رجال الأعمال","قد تساعدك فرص الاستثمار والأعمال على الهجرة بشكل دائم."],
+                en:["Business Immigration","Investment and business opportunities may help you immigrate permanently."] },
+  { i:"users",  ar:["لاجئون","تعرف على كيفية طلب الحماية، والمطالبة بوضع اللاجئ في كندا."],
+                en:["Refugees","Learn how to seek protection and claim refugee status in Canada."] },
+  { i:"send",   ar:["الدخول السريع (EE)","أسرع طريقة للوصول إلى كندا. تتبع عملية الهجرة الكندية بسرعة من خلال نظام EE."],
+                en:["Express Entry (EE)","The fastest way to reach Canada. Move through the Canadian immigration process quickly with the EE system."] },
+  { i:"cap",    ar:["الدراسة في كندا","طريقة رائعة لتأمين مستقبلك وزيادة فرصك في الهجرة إلى كندا."],
+                en:["Study in Canada","A great way to secure your future and improve your chances of immigrating to Canada."] },
+  { i:"home",   ar:["رعاية الأسرة","ابحث عن أفضل طريقة لإحضار أفراد عائلتك من الخارج للعيش في كندا."],
+                en:["Family Sponsorship","Find the best way to bring your family members from abroad to live in Canada."] }
+];
+
+const FAQS = [
+  ["What immigration programs can I apply for?","ما هي برامج الهجرة التي يمكنني التقديم عليها؟"],
+  ["My application was refused. Can I get a refund?","تم رفض طلبي. هل يمكنني استرداد المبلغ؟"],
+  ["What if my relationship status changes, or I have children while my application is in process or after my PR has been granted?","ماذا لو تغيّرت حالتي الاجتماعية أو أنجبت أطفالاً أثناء معالجة طلبي أو بعد حصولي على الإقامة الدائمة؟"],
+  ["Who can I include in my application for a Canada Immigration Visa?","من يمكنني إضافته إلى طلب تأشيرة الهجرة إلى كندا؟"],
+  ["What does “Lock in date” mean?","ماذا يعني «تاريخ التثبيت» (Lock in date)؟"],
+  ["What is an affidavit for a translation?","ما هو إفادة الترجمة (Affidavit)؟"],
+  ["How long must I stay in Canada to keep my permanent resident status?","كم يجب أن أقيم في كندا للحفاظ على وضع الإقامة الدائمة؟"],
+  ["How can I find a doctor to do my immigration medical exam?","كيف أجد طبيباً لإجراء الفحص الطبي للهجرة؟"],
+  ["How long will it take to process my application?","كم تستغرق معالجة طلبي؟"],
+  ["What if I can’t get a police certificate for my immigration application?","ماذا لو لم أستطع الحصول على شهادة عدم محكومية لطلب الهجرة؟"]
+];
+const FAQ_FIRST = {
+  ar:`١- يمكنك زيارة قسم <a href="${SITE}" target="_blank" rel="noopener">الهجرة</a> لعرض جميع الخيارات المناسبة لك، سواء كنت ترغب بالهجرة إلى كندا للعمل أو اللجوء أو الدراسة أو الأعمال.<br>٢- يمكنك أيضاً تعبئة <a href="${SITE}" target="_blank" rel="noopener">التقييم المجاني</a> الآن!`,
+  en:`1- You can visit our <a href="${SITE}" target="_blank" rel="noopener">IMMIGRATION</a> section to view all of the options that suit you. Whether you want to immigrate to Canada for work, asylum, study, or even business.<br>2- You can also fill out our Free <a href="${SITE}" target="_blank" rel="noopener">ASSESSMENT</a> NOW!`
+};
+
+let lang = "ar";
+try{ lang = localStorage.getItem("gic-lang") || "ar"; }catch(e){}
+const $ = s => document.querySelector(s);
+
+function renderServices(){
+  const box = $("#services"); box.innerHTML = "";
+  SERVICES.forEach((s,idx)=>{
+    const d = document.createElement("article");
+    d.className = "svc" + (idx===0 ? " active":"");
+    d.innerHTML = `<svg class="i ico"><use href="#${s.i}"/></svg><h3>${s[lang][0]}</h3><p>${s[lang][1]}</p>`;
+    d.addEventListener("click",()=>{ setActive(idx); d.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); });
+    box.appendChild(d);
+  });
+  const dots = $("#dots"); dots.innerHTML = "";
+  for(let k=0;k<Math.ceil(SERVICES.length/2);k++){
+    const b = document.createElement("button");
+    b.type="button"; b.setAttribute("aria-label","page "+(k+1));
+    b.addEventListener("click",()=>{ const c=box.children[k*2]; c.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"}); setActive(k*2); });
+    dots.appendChild(b);
+  }
+  setActive(0);
+}
+function setActive(idx){
+  [...$("#services").children].forEach((c,i)=>c.classList.toggle("active",i===idx));
+  [...$("#dots").children].forEach((c,i)=>c.classList.toggle("on",i===Math.floor(idx/2)));
+}
+$("#services").addEventListener("scroll",()=>{
+  if(window.innerWidth>=900) return;
+  const box=$("#services"), mid=box.getBoundingClientRect().left+box.clientWidth/2;
+  let best=0,bd=1e9;
+  [...box.children].forEach((c,i)=>{const r=c.getBoundingClientRect();const d=Math.abs(r.left+r.width/2-mid);if(d<bd){bd=d;best=i}});
+  setActive(best);
+},{passive:true});
+
+function renderReels(){
+  const g=$("#vgrid"); g.innerHTML="";
+  REELS.forEach((r,i)=>{
+    const b=document.createElement("button");
+    b.type="button"; b.className="reel"; b.setAttribute("aria-label",T[lang].watch+" "+(i+1));
+    b.innerHTML=(r.cover?`<img src="${r.cover}" alt="" loading="lazy">`:"")+
+      `<span class="play"><i><svg class="i"><use href="#play"/></svg></i></span>`+
+      (r.views?`<span class="views">👁 ${r.views}</span>`:"");
+    b.addEventListener("click",()=>openReel(r.id));
+    g.appendChild(b);
+  });
+}
+function openReel(id){
+  $("#mf").src=`https://www.instagram.com/reel/${id}/embed/`;
+  $("#mo").href=`https://www.instagram.com/reel/${id}/`;
+  $("#modal").classList.add("on"); $("#modal").setAttribute("aria-hidden","false");
+  document.body.style.overflow="hidden";
+}
+function closeReel(){
+  $("#modal").classList.remove("on"); $("#modal").setAttribute("aria-hidden","true");
+  $("#mf").src="about:blank"; document.body.style.overflow="";
+}
+$("#mx").addEventListener("click",closeReel);
+$("#modal").addEventListener("click",e=>{ if(e.target.id==="modal") closeReel(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeReel(); });
+
+function renderFaq(){
+  const a=$("#acc"); a.innerHTML="";
+  FAQS.forEach((q,i)=>{
+    const d=document.createElement("div"); d.className="acc"+(i===0?" open":"");
+    const body = i===0 ? FAQ_FIRST[lang]
+      : `${T[lang].more} <a href="${FAQ_PAGE}" target="_blank" rel="noopener">${T[lang].moreLink}</a>.`;
+    d.innerHTML=`<button type="button"><span>${q[lang==="ar"?1:0]}</span><i>${i===0?"−":"+"}</i></button><div class="body">${body}</div>`;
+    d.querySelector("button").addEventListener("click",()=>{
+      const o=d.classList.toggle("open"); d.querySelector("i").textContent=o?"−":"+";
+    });
+    a.appendChild(d);
+  });
+}
+
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.title = lang==="ar" ? "Get In Canada | نحن خطوتك الأولى" : "Get In Canada";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent=T[lang][el.dataset.i18n]; });
+  $("#langBtn").textContent=T[lang].langBtn;
+  renderServices(); renderReels(); renderFaq();
+}
+$("#langBtn").addEventListener("click",()=>{
+  lang = lang==="ar" ? "en" : "ar";
+  try{ localStorage.setItem("gic-lang",lang); }catch(e){}
+  applyLang();
+});
+
+function route(){
+  const h=(location.hash||"").replace("#","");
+  const id = ["social","faq"].includes(h) ? h : "home";
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+id));
+  const back=$("#backBtn");
+  if(id==="home"){ back.href=SITE; back.removeAttribute("data-inner"); }
+  else { back.href="#"; back.setAttribute("data-inner","1"); }
+  window.scrollTo(0,0);
+}
+$("#backBtn").addEventListener("click",e=>{
+  if(e.currentTarget.getAttribute("data-inner")){ e.preventDefault(); history.pushState("",document.title,location.pathname+location.search); route(); }
+});
+window.addEventListener("hashchange",route);
+
+applyLang(); route();
+</script>
+</body>
+</html>
