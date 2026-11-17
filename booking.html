@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book Your Consultation | Get In Canada</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --pad: 80px;
@@ -24,8 +25,18 @@
   html,body{margin:0;background:#fff}
   body{min-height:100vh;display:flex;flex-direction:column;align-items:center;
        font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+  html[lang="ar"] body{font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
 
-  .logo{margin:32px 0 0;text-align:center}
+  /* شريط علوي: رجوع + اللغة */
+  .topbar{width:100%;max-width:1040px;box-sizing:border-box;padding:18px 20px 0;
+          display:flex;justify-content:space-between;align-items:center}
+  .chip{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;
+        padding:0 10px;border:0;border-radius:6px;background:var(--brand);color:#fff;
+        font:700 15px/1 inherit;font-family:inherit;cursor:pointer;text-decoration:none}
+  .chip svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  [dir="rtl"] .back svg{transform:scaleX(-1)}
+
+  .logo{margin:0;text-align:center}
   .logo img{height:90px;width:auto}
 
   /* شريط الخطوات: للجوال فقط */
@@ -40,7 +51,7 @@
   }
   /* الخط الواصل بين الخطوات (من اليسار إلى اليمين) */
   .steps li:not(:last-child)::after{
-    content:"";position:absolute;top:13px;left:50%;width:100%;height:2px;background:#f0c4c6;
+    content:"";position:absolute;top:13px;inset-inline-start:50%;width:100%;height:2px;background:#f0c4c6;
   }
   @media (max-width: 800px){ .steps-wrap{display:block} }
 
@@ -78,17 +89,24 @@
 </style>
 </head>
 <body>
+  <div class="topbar">
+    <a class="chip back" href="index.html" aria-label="Back">
+      <svg viewBox="0 0 24 24"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>
+    </a>
+    <button class="chip" id="langBtn" type="button">EN</button>
+  </div>
+
   <div class="logo">
     <img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada">
   </div>
 
   <div class="steps-wrap">
-    <p class="steps-title">Book Your Consultation in 4 Simple Steps</p>
+    <p class="steps-title" data-t="stepsTitle">Book Your Consultation in 4 Simple Steps</p>
     <ol class="steps">
-      <li><span>1</span>Service Selection</li>
-      <li><span>2</span>Date &amp; Time</li>
-      <li><span>3</span>Your Information</li>
-      <li><span>4</span>Payments</li>
+      <li><span>1</span><em data-t="s1" style="font-style:normal">Service Selection</em></li>
+      <li><span>2</span><em data-t="s2" style="font-style:normal">Date &amp; Time</em></li>
+      <li><span>3</span><em data-t="s3" style="font-style:normal">Your Information</em></li>
+      <li><span>4</span><em data-t="s4" style="font-style:normal">Payments</em></li>
     </ol>
   </div>
 
@@ -97,7 +115,7 @@
             title="Booking form" allow="payment"></iframe>
     <div class="loader">
       <div class="spinner"></div>
-      <span>Loading booking form…</span>
+      <span data-t="loading">Loading booking form…</span>
     </div>
   </div>
 
@@ -109,6 +127,29 @@
   const show  = () => crop.classList.add('ready');
   frame.addEventListener('load', () => setTimeout(show, SETTLE_MS));
   setTimeout(show, MAX_WAIT_MS);
+
+  /* اللغة: تتزامن مع الصفحة الرئيسية (نموذج الحجز نفسه يبقى بالإنجليزية) */
+  const T = {
+    ar:{stepsTitle:"احجز استشارتك في 4 خطوات بسيطة",s1:"اختيار الخدمة",s2:"التاريخ والوقت",s3:"معلوماتك",s4:"الدفع",
+        loading:"جاري تحميل نموذج الحجز…",btn:"EN",title:"احجز استشارتك | Get In Canada"},
+    en:{stepsTitle:"Book Your Consultation in 4 Simple Steps",s1:"Service Selection",s2:"Date & Time",s3:"Your Information",s4:"Payments",
+        loading:"Loading booking form…",btn:"ع",title:"Book Your Consultation | Get In Canada"}
+  };
+  let lang = "ar";
+  try{ lang = localStorage.getItem("gic-lang") || "ar"; }catch(e){}
+  function applyLang(){
+    document.documentElement.lang = lang;
+    document.documentElement.dir  = lang === "ar" ? "rtl" : "ltr";
+    document.title = T[lang].title;
+    document.querySelectorAll("[data-t]").forEach(el => el.textContent = T[lang][el.dataset.t]);
+    document.getElementById("langBtn").textContent = T[lang].btn;
+  }
+  document.getElementById("langBtn").addEventListener("click", () => {
+    lang = lang === "ar" ? "en" : "ar";
+    try{ localStorage.setItem("gic-lang", lang); }catch(e){}
+    applyLang();
+  });
+  applyLang();
 </script>
 </body>
 </html>
