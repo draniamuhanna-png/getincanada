@@ -57,26 +57,26 @@ svg.f{fill:currentColor;stroke:none}
 .hero img.logo{height:90px;width:auto;margin-top:-40px}
 .hero h1{margin:8px 0 8px;font-size:17px;font-weight:800;color:#2b2b2b;line-height:1.5}
 .hero h1::after{content:"";display:block;width:48px;height:2px;background:var(--brand);margin:10px auto 0}
-.hero p{margin:14px auto 0;font-size:12.5px;color:#333;line-height:2}
+.hero p{margin:14px auto 0;font-size:13.5px;color:#333;line-height:1.7}
 
-/* services (حركة هادئة: بدون رفع للبطاقات، وانتقال لون ناعم) */
+/* services (بطاقة نشطة أكبر قليلاً، حركة ناعمة وبطيئة) */
 .services-wrap{margin-top:20px}
 .services{
-  display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;
-  padding:10px 20px 14px;margin:0 -20px;
+  display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;
+  padding:16px 20px 20px;margin:0 -20px;
   scrollbar-width:none;overscroll-behavior-x:contain;
 }
 .services::-webkit-scrollbar{display:none}
 .svc{
-  flex:0 0 153px;min-height:180px;scroll-snap-align:center;scroll-snap-stop:always;
-  background:var(--card);border-radius:10px;padding:18px 14px 16px;
+  position:relative;flex:0 0 161px;min-height:190px;scroll-snap-align:center;scroll-snap-stop:always;
+  background:var(--card);border-radius:10px;padding:18px 28px 18px 20px;text-align:left;
   box-shadow:0 3px 14px rgba(20,30,50,.07);
-  transition:background-color .6s ease,box-shadow .6s ease;
+  transition:background-color .6s ease,box-shadow .6s ease,transform .6s ease;
 }
-.svc .ico{font-size:28px;color:var(--brand);display:block;margin-bottom:26px;transition:color .6s ease}
-.svc h3{margin:0 0 6px;font-size:12.5px;font-weight:700;color:#1b2a3a;transition:color .6s ease}
-.svc p{margin:0;font-size:10.5px;line-height:1.8;color:var(--muted);transition:color .6s ease}
-.svc.active{background:var(--brand);box-shadow:0 8px 20px rgba(214,0,11,.22)}
+.svc .ico{font-size:34px;color:var(--brand);display:block;margin:0 auto 24px 0;transition:color .6s ease}
+.svc h3{margin:0 0 6px;font-size:13.5px;font-weight:700;color:#1b2a3a;transition:color .6s ease}
+.svc p{margin:0;font-size:11.5px;line-height:1.8;color:var(--muted);transition:color .6s ease}
+.svc.active{background:var(--brand);box-shadow:0 8px 20px rgba(214,0,11,.22);transform:scale(1.11);z-index:1}
 .svc.active .ico,.svc.active h3,.svc.active p{color:#fff}
 .dots{display:flex;justify-content:center;gap:6px;margin-top:0}
 .dots button{width:8px;height:8px;border-radius:50%;border:0;padding:0;background:#d8d8d8;transition:background-color .5s ease}
@@ -84,7 +84,7 @@ svg.f{fill:currentColor;stroke:none}
 
 /* CTA */
 .cta{
-  display:flex;align-items:center;gap:12px;margin-top:20px;
+  display:flex;align-items:center;gap:12px;margin-top:22px;
   background:var(--brand);color:#fff;border-radius:8px;padding:16px 18px;
   box-shadow:0 6px 16px rgba(214,0,11,.2);transition:background-color .3s ease;
 }
@@ -94,7 +94,7 @@ svg.f{fill:currentColor;stroke:none}
 .cta span{display:block;font-size:11px;opacity:.95;margin-top:1px}
 
 /* list buttons */
-.grid2{display:grid;gap:12px;margin-top:16px}
+.grid2{display:grid;gap:8px;margin-top:18px}
 .row{
   display:flex;align-items:center;gap:14px;width:100%;
   background:var(--soft);border:0;border-radius:8px;padding:16px 18px;text-align:start;color:inherit;
@@ -104,11 +104,12 @@ svg.f{fill:currentColor;stroke:none}
 .row .ico{font-size:32px;color:var(--brand);flex:none}
 .row b{display:block;font-size:15.5px;font-weight:700;color:#3a3a3a;line-height:1.3}
 .row span{display:block;font-size:12px;color:#555;margin-top:2px}
+.row b .brand{color:var(--brand);font-weight:800}
 
 /* videos */
-.vhead{display:flex;align-items:center;gap:10px;margin:30px 0 14px}
-.vhead .ico{font-size:26px;color:var(--brand)}
-.vhead h2{margin:0;font-size:15px;font-weight:700;color:#3a3a3a;flex:1}
+.vhead{display:flex;align-items:center;gap:14px;margin:26px 0 16px;padding-inline:18px 6px}
+.vhead .ico{font-size:32px;color:var(--brand);flex:none}
+.vhead h2{margin:0;font-size:15.5px;font-weight:700;color:#3a3a3a;flex:1;line-height:1.3}
 .vhead small{font-size:12px;color:#444}
 .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .reel{
@@ -207,6 +208,7 @@ footer a{color:var(--brand);font-weight:600}
     <symbol id="wa" viewBox="0 0 24 24"><path d="M3 21l1.6-4.8A9 9 0 1 1 8 19.6z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-1 .8c-1-.4-2-1.4-2.4-2.4l.8-1-1-2z"/></symbol>
     <symbol id="eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
     <symbol id="pin" viewBox="0 0 24 24"><path d="M9 3h6l-1 6 3.5 4H6.5L10 9z" fill="currentColor" stroke="none"/><path d="M12 13v8"/></symbol>
+    <symbol id="web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20M3 7.5h18M3 16.5h18"/><rect x="2.5" y="9.3" width="19" height="5.4" rx="1.2" style="fill:var(--soft)"/><text x="12" y="13.4" text-anchor="middle" font-size="4.6" font-weight="700" font-family="Inter,Arial,sans-serif" fill="currentColor" stroke="none">www</text></symbol>
     <symbol id="play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="currentColor" stroke="none"/></symbol>
   </defs>
 </svg>
@@ -238,9 +240,17 @@ footer a{color:var(--brand);font-weight:600}
     </a>
 
     <div class="grid2">
+      <a class="row" href="https://getincanada.ca/" target="_blank" rel="noopener">
+        <svg class="i ico"><use href="#web"/></svg>
+        <div><b><span data-i18n="web"></span> <span class="brand">Getincanada</span></b><span data-i18n="web2"></span></div>
+      </a>
       <a class="row" href="#social">
         <svg class="i ico"><use href="#share"/></svg>
         <div><b data-i18n="soc"></b><span data-i18n="soc2"></span></div>
+      </a>
+      <a class="row" href="#faq">
+        <svg class="i ico"><use href="#help"/></svg>
+        <div><b data-i18n="faq"></b><span data-i18n="faq2"></span></div>
       </a>
     </div>
 
@@ -251,14 +261,7 @@ footer a{color:var(--brand);font-weight:600}
     </div>
     <div class="vgrid" id="vgrid"></div>
 
-    <div class="grid2" style="margin-top:22px">
-      <a class="row" href="#faq">
-        <svg class="i ico"><use href="#help"/></svg>
-        <div><b data-i18n="faq"></b><span data-i18n="faq2"></span></div>
-      </a>
-    </div>
 
-    <footer><a href="https://getincanada.ca/" data-i18n="site"></a></footer>
   </main>
 
   <!-- SOCIAL -->
@@ -334,7 +337,7 @@ const T = {
     cta:"احجز استشارتك الآن!", cta2:"تأمين جلسة استراتيجية الهجرة المرخصة",
     soc:"وسائل التواصل الاجتماعي", soc2:"إنستغرام وواتساب — كل قنواتنا بمكان واحد",
     faq:"أسئلة شائعة", faq2:"كل ما تحتاج السؤال عنه في مكان واحد",
-    vids:"أهم فيديوهات أو ريلز",
+    vids:"أهم الفيديوهات", web:"الموقع الرسمي", web2:"قم بزيارة موقعنا الرسمي",
     socT:"قنوات التواصل", socS:"تابعنا وتواصل معنا",
     ig:"إنستغرام", wa:"واتساب",
     faqIntro:"فريقنا جاهز لإرشادك خلال عملية التقديم لكندا، سواء للعمل أو اللجوء أو الدراسة أو الأعمال.",
@@ -349,7 +352,7 @@ const T = {
     cta:"Book Your Consultation Now!", cta2:"Secure a licensed immigration strategy session",
     soc:"Social Media", soc2:"Instagram and WhatsApp — all our channels in one place",
     faq:"FAQs", faq2:"Everything you need to ask, in one place",
-    vids:"Top Videos & Reels",
+    vids:"Top Videos", web:"Official Website", web2:"Visit our official website",
     socT:"Our Channels", socS:"Follow us and get in touch",
     ig:"Instagram", wa:"WhatsApp",
     faqIntro:"Our team is ready to guide you through Canada's application process — for work, asylum, study or business.",
