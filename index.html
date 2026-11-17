@@ -211,7 +211,7 @@ footer a{color:var(--brand);font-weight:600}
 
 <div class="wrap">
   <div class="topbar">
-    <a class="chip back" id="backBtn" href="https://getincanada.ca/" aria-label="Back">
+    <a class="chip back" id="backBtn" href="#" aria-label="Back" style="visibility:hidden">
       <svg class="i"><use href="#arrow"/></svg>
     </a>
     <button class="chip" id="langBtn" type="button">EN</button>
@@ -470,8 +470,8 @@ function route(){
   const id = ["social","faq"].includes(h) ? h : "home";
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+id));
   const back=$("#backBtn");
-  if(id==="home"){ back.href=SITE; back.removeAttribute("data-inner"); }
-  else { back.href="#"; back.setAttribute("data-inner","1"); }
+  if(id==="home"){ back.style.visibility="hidden"; back.removeAttribute("data-inner"); }
+  else { back.style.visibility="visible"; back.href="#"; back.setAttribute("data-inner","1"); }
   window.scrollTo(0,0);
 }
 $("#backBtn").addEventListener("click",e=>{
