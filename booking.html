@@ -4,7 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Book Your Consultation | Get In Canada</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://booking.getincanada.ca" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <style>
   :root{
     --pad: 80px;
@@ -97,7 +100,7 @@
   </div>
 
   <div class="logo">
-    <img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada">
+    <img src="https://booking.getincanada.ca/wp-content/uploads/2023/09/logo-GIC.png" alt="Get In Canada" fetchpriority="high">
   </div>
 
   <div class="steps-wrap">
@@ -112,7 +115,7 @@
 
   <div class="crop">
     <iframe src="https://booking.getincanada.ca/" scrolling="no"
-            title="Booking form" allow="payment"></iframe>
+            title="Booking form" allow="payment" fetchpriority="high"></iframe>
     <div class="loader">
       <div class="spinner"></div>
       <span data-t="loading">Loading booking form…</span>
@@ -120,7 +123,7 @@
   </div>
 
 <script>
-  const SETTLE_MS   = 1500;
+  const SETTLE_MS   = 600;
   const MAX_WAIT_MS = 9000;
   const crop  = document.querySelector('.crop');
   const frame = crop.querySelector('iframe');
