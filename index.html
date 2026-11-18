@@ -399,6 +399,16 @@ const PAGES = {
   "asylum":        "https://getincanada.ca/immigration/refugee/humanitarian-and-compassionate-application/",
   "blog":          "https://getincanada.ca/blog/"
 };
+// false = تُفتح هذه الصفحات في تبويب جديد (موقع getincanada.ca يمنع عرض صفحاته داخل مواقع أخرى فتظهر فارغة).
+// true  = تُعرض داخل الموقع (تعمل فقط بعد أن يسمح مبرمج الموقع الأصلي بذلك).
+const EMBED_PAGES = false;
+function externalizeLinks(){
+  if(EMBED_PAGES) return;
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    const k=a.getAttribute("href").slice(1);
+    if(Object.prototype.hasOwnProperty.call(PAGES,k)){ a.href=PAGES[k]; a.target="_blank"; a.rel="noopener"; }
+  });
+}
 // روابط التواصل (تفتح في نافذة جديدة لأن هذه المنصات لا تسمح بعرضها داخل الموقع)
 const SOCIALS = [
   { i:"ig", filled:false, ar:"إنستغرام", en:"Instagram", h:"@getincanada",      u:"https://www.instagram.com/getincanada/reels/" },
@@ -595,6 +605,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent=T[lang][el.dataset.i18n]; });
   $("#langBtn").textContent=T[lang].langBtn;
   renderServices(); renderReels(); renderFaq(); renderSocials();
+  externalizeLinks();
 }
 $("#langBtn").addEventListener("click",()=>{
   lang = lang==="ar" ? "en" : "ar";
@@ -616,7 +627,7 @@ function closeEmbed(){
 }
 function route(){
   const h=(location.hash||"").replace("#","");
-  const isEmbed=Object.prototype.hasOwnProperty.call(PAGES,h);
+  const isEmbed=EMBED_PAGES && Object.prototype.hasOwnProperty.call(PAGES,h);
   const id = isEmbed ? "embed" : (["social","faq"].includes(h) ? h : "home");
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+id));
   document.documentElement.classList.toggle("embed-on",isEmbed);
