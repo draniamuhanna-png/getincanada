@@ -6,6 +6,7 @@
 <title>Get In Canada</title>
 <link rel="preconnect" href="https://booking.getincanada.ca" crossorigin>
 <link rel="dns-prefetch" href="https://booking.getincanada.ca">
+<link rel="preconnect" href="https://getincanada.ca" crossorigin>
 <link rel="preconnect" href="https://www.instagram.com">
 <link rel="dns-prefetch" href="https://static.cdninstagram.com">
 <link rel="preconnect" href="https://www.tiktok.com">
@@ -216,6 +217,9 @@ html.embed-on .wrap{padding-bottom:0}
 .pcard span{display:block;font-size:12px;color:#555;line-height:1.6}
 .morebtn{display:block;margin:14px auto 0;border:0;border-radius:8px;background:var(--soft);padding:11px 26px;font-weight:700;font-size:13.5px;color:#333}
 .nopen{display:block;margin:22px 0 8px;text-align:center;background:var(--brand);color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13.5px}
+.skimg{display:block;width:84px;height:84px;border-radius:6px;background:#e4e4e4;flex:none}
+.skl{display:block;height:12px;border-radius:6px;background:#e4e4e4;margin:8px 0}
+.skl.s{width:60%}
 .nnote{background:#fff6e5;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#7a5200;margin:0 0 14px;line-height:1.7}
 .nerr{text-align:center;color:#555;font-size:14px;line-height:1.9;padding-top:50px}
 
@@ -644,7 +648,7 @@ function applyLang(){
 $("#langBtn").addEventListener("click",()=>{
   lang = lang==="ar" ? "en" : "ar";
   try{ localStorage.setItem("gic-lang",lang); }catch(e){}
-  applyLang();
+  applyLang(); prefetchNative();
   if($("#v-native").classList.contains("on")) showNative((location.hash||"").replace("#",""));
 });
 
@@ -664,12 +668,21 @@ function closeEmbed(){
 /* ===== عرض صفحات getincanada.ca داخل موقعنا (يجلب المحتوى من واجهة ووردبريس ويعرضه بتصميمنا) ===== */
 const WP_API = "https://getincanada.ca/wp-json/wp/v2/";
 const wpCache = {};
-async function wpGet(p){
-  if(wpCache[p]) return wpCache[p];
-  const r = await fetch(WP_API+p,{headers:{Accept:"application/json"}});
-  if(!r.ok) throw new Error("HTTP "+r.status);
-  const j = await r.json(); wpCache[p]=j; return j;
+const WP_TTL = 30*60*1000; // مدة حفظ النسخة المؤقتة على جهاز الزائر
+function wpFetchJSON(url){
+  if(wpCache[url]) return wpCache[url];
+  const k="gic:"+url;
+  try{
+    const c=JSON.parse(localStorage.getItem(k)||"null");
+    if(c && Date.now()-c.t<WP_TTL){ return (wpCache[url]=Promise.resolve(c.d)); }
+  }catch(e){}
+  const p = fetch(url,{headers:{Accept:"application/json"}})
+    .then(r=>{ if(!r.ok) throw new Error("HTTP "+r.status); return r.json(); })
+    .then(j=>{ try{ const t=JSON.stringify({t:Date.now(),d:j}); if(t.length<700000) localStorage.setItem(k,t); }catch(e){} return j; });
+  p.catch(()=>{ delete wpCache[url]; });
+  return (wpCache[url]=p);
 }
+const wpGet = p => wpFetchJSON(WP_API+p);
 const plain = h => new DOMParser().parseFromString(h||"","text/html").body.textContent.trim();
 function absUrl(u){ try{ return new URL(u,"https://getincanada.ca/").href; }catch(e){ return ""; } }
 function clean(html){
@@ -677,10 +690,11 @@ function clean(html){
   doc.querySelectorAll("script,style,iframe,form,noscript,link,meta,object,embed,button,input,select,textarea,nav,header,footer,svg,video,audio").forEach(e=>e.remove());
   doc.body.querySelectorAll("img").forEach(im=>{
     const u = im.getAttribute("data-lazy-src")||im.getAttribute("data-src")||im.getAttribute("src")||"";
-    if(!u || u.startsWith("data:")) im.remove(); else im.setAttribute("src",absUrl(u));
+    if(!u || u.startsWith("data:")) im.remove(); else { im.setAttribute("src",absUrl(u)); im.dataset.l="1"; }
   });
   doc.body.querySelectorAll("*").forEach(el=>{
     [...el.attributes].forEach(a=>{ if(!["href","src","alt"].includes(a.name)) el.removeAttribute(a.name); });
+    if(el.tagName==="IMG"){ el.setAttribute("loading","lazy"); el.setAttribute("decoding","async"); }
     if(el.tagName==="A"){
       const h = el.getAttribute("href")||"";
       if(/^\s*javascript:/i.test(h)) el.removeAttribute("href");
@@ -693,20 +707,15 @@ function clean(html){
 }
 // صفحات النسخة العربية من الموقع (اختياري): الصقي رابط الصفحة العربية المقابلة لكل قسم ليُعرض بالعربي بدقة.
 // مثال: "immigration": "https://getincanada.ca/ar/اسم-الصفحة/"  — اتركيها فارغة وسيحاول الموقع إيجاد الترجمة تلقائيًا.
-const PAGES_AR = { "immigration":"", "express-entry":"", "asylum":"", "blog":"" };
+const PAGES_AR = { "immigration":"https://getincanada.ca/ar/الهجرة/", "express-entry":"https://getincanada.ca/ar/%d8%a7%d9%84%d9%87%d8%ac%d8%b1%d8%a9/%d9%87%d8%ac%d8%b1%d8%a9-%d8%a7%d9%84%d8%af%d8%ae%d9%88%d9%84-%d8%a7%d9%84%d8%b3%d8%b1%d9%8a%d8%b9/", "asylum":"https://getincanada.ca/ar/%d8%a7%d9%84%d9%87%d8%ac%d8%b1%d8%a9/%d8%a7%d9%84%d9%84%d8%ac%d9%88%d8%a1/%d8%a7%d9%84%d9%84%d8%ac%d9%88%d8%a1-%d9%84%d8%a3%d8%b3%d8%a8%d8%a7%d8%a8-%d8%a5%d9%86%d8%b3%d8%a7%d9%86%d9%8a%d8%a9/", "blog":"" };
 const WP_AR_VARIANTS = [
-  { base: WP_API, extra: "&lang=ar" },
-  { base: "https://getincanada.ca/ar/wp-json/wp/v2/", extra: "" }
+  { base: "https://getincanada.ca/ar/wp-json/wp/v2/", extra: "" },
+  { base: WP_API, extra: "&lang=ar" }
 ];
 const hasArabic = t => /[\u0600-\u06FF]/.test(t||"");
 const normUrl = u => (u||"").replace(/\/$/,"");
 const slugOf = u => { const seg=normUrl(u).split("/").pop(); try{ return encodeURIComponent(decodeURIComponent(seg)); }catch(e){ return seg; } };
-async function wpGetFrom(base,p){
-  const key=base+p; if(wpCache[key]) return wpCache[key];
-  const r = await fetch(base+p,{headers:{Accept:"application/json"}});
-  if(!r.ok) throw new Error("HTTP "+r.status);
-  const j = await r.json(); wpCache[key]=j; return j;
-}
+const wpGetFrom = (base,p) => wpFetchJSON(base+p);
 const POST_QS = (per,page)=>`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,title,excerpt,_links,_embedded`;
 async function fetchPostList(page,per,ctx){
   // يعيد { list, english } ويحفظ المتغير الناجح في ctx
@@ -733,7 +742,9 @@ async function fetchSectionPage(h){
   if(lang==="ar"){
     const arUrl = PAGES_AR[h];
     if(arUrl){
-      try{ const p = pick(await wpGet(`pages?slug=${slugOf(arUrl)}&lang=ar&_fields=title,content,link`),arUrl); if(p) return {p,english:false}; }catch(e){}
+      for(const v of WP_AR_VARIANTS){
+        try{ const p = pick(await wpGetFrom(v.base,`pages?slug=${slugOf(arUrl)}${v.extra}&_fields=title,content,link`),arUrl); if(p) return {p,english:false}; }catch(e){}
+      }
     }
     let base=null;
     try{ base = pick(await wpGet(`pages?slug=${slugOf(url)}&_fields=id,title,content,link,translations`),url); }catch(e){}
@@ -752,7 +763,8 @@ async function fetchSectionPage(h){
 let nTok = 0;
 async function showNative(h){
   const tok=++nTok, body=$("#nBody"), title=$("#nTitle"), open=$("#nOpen");
-  body.innerHTML = `<div class="nload"><div class="spinner"></div><span>${T[lang].loading}</span></div>`;
+  const sk = '<div class="pcard"><i class="skimg"></i><div style="flex:1"><i class="skl"></i><i class="skl s"></i></div></div>'.repeat(5);
+  body.innerHTML = h==="blog" ? sk : `<div class="nload"><div class="spinner"></div><span>${T[lang].loading}</span></div>`;
   title.textContent = ""; open.href = SITE;
   const note = on => on ? `<div class="nnote">${T[lang].nEn}</div>` : "";
   try{
@@ -827,15 +839,32 @@ applyLang(); route();
 
 /* تحميل مسبق لنموذج الحجز بصمت ليفتح أسرع. اجعليها false لإلغائه (يستهلك بيانات الزائر ويُحتسب زيارة في موقع الحجز) */
 const PREWARM_BOOKING = true;
-function warmBooking(){
+function warmBooking(force){
   const c=navigator.connection||{};
-  if(!PREWARM_BOOKING || c.saveData || /(^|-)2g$/.test(c.effectiveType||"")) return;
+  if(window.__bw) return;
+  if(!PREWARM_BOOKING || (!force && (c.saveData || /(^|-)2g$/.test(c.effectiveType||"")))) return;
+  window.__bw=1;
   const f=document.createElement("iframe");
   f.src="https://booking.getincanada.ca/"; f.tabIndex=-1; f.setAttribute("aria-hidden","true"); f.title="";
   f.style.cssText="position:fixed;bottom:0;right:0;width:1px;height:1px;border:0;visibility:hidden;pointer-events:none";
   document.body.appendChild(f);
 }
-window.addEventListener("load",()=>{ (window.requestIdleCallback||setTimeout)(()=>setTimeout(warmBooking,1200)); });
+function prefetchNative(one){
+  if(!NATIVE_PAGES || EMBED_PAGES) return;
+  const c=navigator.connection||{}; if(c.saveData || /(^|-)2g$/.test(c.effectiveType||"")) return;
+  if(one){ if(one==="blog") fetchPostList(1,10,{}).catch(()=>{}); else if(PAGES[one]) fetchSectionPage(one).catch(()=>{}); return; }
+  Object.keys(PAGES).forEach(k=>prefetchNative(k));
+}
+window.addEventListener("load",()=>{
+  (window.requestIdleCallback||setTimeout)(()=>{ setTimeout(prefetchNative,200); setTimeout(warmBooking,600); });
+});
+/* عند لمس الزر نبدأ التحميل فورًا قبل أن يرفع الزائر إصبعه */
+document.addEventListener("pointerdown",e=>{
+  const a=e.target.closest&&e.target.closest("a"); if(!a) return;
+  const h=a.getAttribute("href")||"";
+  if(/booking\.html$/.test(h)) warmBooking(true);
+  else if(h.startsWith("#")) prefetchNative(h.slice(1));
+},{passive:true});
 </script>
 <script>
 /* صور الأغلفة (ثقيلة) تُحمَّل بعد ظهور الصفحة حتى لا تؤخر النصوص */
