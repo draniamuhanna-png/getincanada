@@ -195,6 +195,26 @@ html.embed-on .wrap{padding-bottom:0}
 .spinner{width:36px;height:36px;border:3px solid #eee;border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* صفحات الموقع الأصلي بتصميمنا (بدون iframe) */
+.nload{display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:70px;color:#666;font-size:14px}
+.nbody{font-size:14px;line-height:1.95;color:#2f2f2f;overflow-wrap:anywhere}
+.nbody h1,.nbody h2,.nbody h3,.nbody h4{line-height:1.5;color:#1b2a3a;margin:22px 0 8px;font-weight:800}
+.nbody h1{font-size:20px}.nbody h2{font-size:18px}.nbody h3{font-size:16px}.nbody h4{font-size:14.5px}
+.nbody p{margin:0 0 12px}
+.nbody img{max-width:100%;height:auto;border-radius:8px;display:block;margin:12px auto}
+.nbody a{color:var(--brand);text-decoration:underline}
+.nbody ul,.nbody ol{padding-inline-start:22px;margin:0 0 12px}
+.nbody table{display:block;overflow-x:auto;max-width:100%;border-collapse:collapse;font-size:13px}
+.nbody td,.nbody th{border:1px solid #e3e3e3;padding:6px 8px}
+.nbody blockquote{margin:12px 0;padding:8px 14px;border-inline-start:3px solid var(--brand);background:#fafafa}
+.pcard{display:flex;gap:12px;align-items:center;background:var(--soft);border-radius:8px;padding:10px;margin-bottom:8px;color:inherit}
+.pcard img{width:84px;height:84px;object-fit:cover;border-radius:6px;flex:none;background:#ddd}
+.pcard b{display:block;font-size:14px;line-height:1.5;color:#2b2b2b;margin-bottom:3px}
+.pcard span{display:block;font-size:12px;color:#555;line-height:1.6}
+.morebtn{display:block;margin:14px auto 0;border:0;border-radius:8px;background:var(--soft);padding:11px 26px;font-weight:700;font-size:13.5px;color:#333}
+.nopen{display:block;margin:22px 0 8px;text-align:center;background:var(--brand);color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13.5px}
+.nerr{text-align:center;color:#555;font-size:14px;line-height:1.9;padding-top:50px}
+
 /* sub pages */
 .sub{max-width:640px;margin:0 auto}
 .sub .head{text-align:center;padding:8px 0 26px}
@@ -340,6 +360,15 @@ footer a{color:var(--brand);font-weight:600}
     </div>
   </main>
 
+  <!-- صفحات الموقع الأصلي بتصميمنا -->
+  <main class="view" id="v-native">
+    <div class="sub">
+      <div class="head"><h2 id="nTitle"></h2></div>
+      <div id="nBody"></div>
+      <a class="nopen" id="nOpen" href="#" target="_blank" rel="noopener"><span data-i18n="openPage"></span></a>
+    </div>
+  </main>
+
   <!-- FAQ -->
   <main class="view" id="v-faq">
     <div class="sub">
@@ -402,8 +431,9 @@ const PAGES = {
 // false = تُفتح هذه الصفحات في تبويب جديد (موقع getincanada.ca يمنع عرض صفحاته داخل مواقع أخرى فتظهر فارغة).
 // true  = تُعرض داخل الموقع (تعمل فقط بعد أن يسمح مبرمج الموقع الأصلي بذلك).
 const EMBED_PAGES = false;
+const NATIVE_PAGES = true; // true = عرض الصفحات داخل الموقع بتصميمنا عبر واجهة ووردبريس (بدون iframe)
 function externalizeLinks(){
-  if(EMBED_PAGES) return;
+  if(EMBED_PAGES||NATIVE_PAGES) return;
   document.querySelectorAll('a[href^="#"]').forEach(a=>{
     const k=a.getAttribute("href").slice(1);
     if(Object.prototype.hasOwnProperty.call(PAGES,k)){ a.href=PAGES[k]; a.target="_blank"; a.rel="noopener"; }
@@ -427,7 +457,7 @@ const T = {
     intro:"مجموعة من خبراء الاستشارة في الهجرة والأعمال التجارية والاستشارات الأكاديمية لتلبية احتياجات كل فرد ومنظمة تستخدم خدماتنا.",
     cta:"احجز استشارتك الآن!", cta2:"تأمين جلسة استراتيجية الهجرة المرخصة",
     soc:"وسائل التواصل الاجتماعي", soc2:"إنستغرام، فيسبوك، لينكدإن — كل صفحاتنا بمكان واحد",
-    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", openPage:"فتح الصفحة في المتصفح ↗",
+    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", more:"عرض المزيد", nErr:"تعذّر عرض هذه الصفحة هنا. يمكنك فتحها من الموقع الرسمي.", openPage:"فتح الصفحة في المتصفح ↗",
     faq:"أسئلة شائعة", faq2:"كل ما تحتاج السؤال عنه في مكان واحد",
     vids:"أهم الفيديوهات", web:"الموقع الرسمي", web2:"قم بزيارة موقعنا الرسمي",
     socT:"قنوات التواصل", socS:"تابعنا وتواصل معنا",
@@ -443,7 +473,7 @@ const T = {
     intro:"A team of immigration, business and academic consulting experts meeting the needs of every individual and organization using our services.",
     cta:"Book Your Consultation Now!", cta2:"Secure a licensed immigration strategy session",
     soc:"Social Media", soc2:"Instagram, Facebook, LinkedIn — all our pages in one place",
-    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", openPage:"Open page in browser ↗",
+    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", more:"Load more", nErr:"We couldn\u2019t display this page here. You can open it on the official website.", openPage:"Open page in browser ↗",
     faq:"FAQs", faq2:"Everything you need to ask, in one place",
     vids:"Top Videos", web:"Official Website", web2:"Visit our official website",
     socT:"Our Channels", socS:"Follow us and get in touch",
@@ -625,20 +655,110 @@ function closeEmbed(){
   if(!ef.dataset.cur) return;
   delete ef.dataset.cur; ef.src="about:blank"; embedBox.classList.remove("ready");
 }
+
+/* ===== عرض صفحات getincanada.ca داخل موقعنا (يجلب المحتوى من واجهة ووردبريس ويعرضه بتصميمنا) ===== */
+const WP_API = "https://getincanada.ca/wp-json/wp/v2/";
+const wpCache = {};
+async function wpGet(p){
+  if(wpCache[p]) return wpCache[p];
+  const r = await fetch(WP_API+p,{headers:{Accept:"application/json"}});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const j = await r.json(); wpCache[p]=j; return j;
+}
+const plain = h => new DOMParser().parseFromString(h||"","text/html").body.textContent.trim();
+function absUrl(u){ try{ return new URL(u,"https://getincanada.ca/").href; }catch(e){ return ""; } }
+function clean(html){
+  const doc = new DOMParser().parseFromString(html||"","text/html");
+  doc.querySelectorAll("script,style,iframe,form,noscript,link,meta,object,embed,button,input,select,textarea,nav,header,footer,svg,video,audio").forEach(e=>e.remove());
+  doc.body.querySelectorAll("img").forEach(im=>{
+    const u = im.getAttribute("data-lazy-src")||im.getAttribute("data-src")||im.getAttribute("src")||"";
+    if(!u || u.startsWith("data:")) im.remove(); else im.setAttribute("src",absUrl(u));
+  });
+  doc.body.querySelectorAll("*").forEach(el=>{
+    [...el.attributes].forEach(a=>{ if(!["href","src","alt"].includes(a.name)) el.removeAttribute(a.name); });
+    if(el.tagName==="A"){
+      const h = el.getAttribute("href")||"";
+      if(/^\s*javascript:/i.test(h)) el.removeAttribute("href");
+      else { el.setAttribute("href",absUrl(h)); el.setAttribute("target","_blank"); el.setAttribute("rel","noopener"); }
+    }
+    if(/^(P|LI|H1|H2|H3|H4|H5|H6|BLOCKQUOTE|TD|TH)$/.test(el.tagName)) el.setAttribute("dir","auto");
+  });
+  doc.body.querySelectorAll("p,div,span,h1,h2,h3,h4,h5,h6,li").forEach(el=>{ if(!el.textContent.trim() && !el.querySelector("img")) el.remove(); });
+  return doc.body.innerHTML;
+}
+let nTok = 0;
+async function showNative(h){
+  const tok=++nTok, body=$("#nBody"), title=$("#nTitle"), open=$("#nOpen");
+  body.innerHTML = `<div class="nload"><div class="spinner"></div><span>${T[lang].loading}</span></div>`;
+  title.textContent = ""; open.href = SITE;
+  try{
+    const m = h.match(/^post-(\d+)$/);
+    if(m){
+      open.href = PAGES.blog;
+      const p = await wpGet(`posts/${m[1]}?_fields=title,content,link`);
+      if(tok!==nTok) return;
+      title.textContent = plain(p.title.rendered); open.href = p.link;
+      body.innerHTML = `<article class="nbody">${clean(p.content.rendered)}</article>`;
+    }else if(h==="blog"){
+      title.textContent = T[lang].art; open.href = PAGES.blog;
+      body.innerHTML = `<div id="plist"></div><button class="morebtn" id="pmore" type="button" hidden>${T[lang].more}</button>`;
+      let page = 1; const per = 10;
+      const load = async ()=>{
+        const list = await wpGet(`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,title,excerpt,_links,_embedded`);
+        if(tok!==nTok) return;
+        list.forEach(p=>{
+          const a=document.createElement("a"); a.className="pcard"; a.href="#post-"+p.id;
+          const med=p._embedded&&p._embedded["wp:featuredmedia"]&&p._embedded["wp:featuredmedia"][0];
+          const sz=med&&med.media_details&&med.media_details.sizes;
+          const img=(sz&&sz.medium&&sz.medium.source_url)||(med&&med.source_url)||"";
+          if(img){ const i=document.createElement("img"); i.src=img; i.alt=""; i.loading="lazy"; a.appendChild(i); }
+          const d=document.createElement("div"), b=document.createElement("b"), sp=document.createElement("span");
+          b.textContent=plain(p.title.rendered); b.setAttribute("dir","auto");
+          const ex=plain(p.excerpt&&p.excerpt.rendered); sp.textContent=ex.length>110?ex.slice(0,110)+"…":ex; sp.setAttribute("dir","auto");
+          d.append(b,sp); a.appendChild(d); $("#plist").appendChild(a);
+        });
+        $("#pmore").hidden = list.length<per;
+        if(list.length===0 && page===1) throw new Error("empty");
+      };
+      await load();
+      $("#pmore").addEventListener("click",async()=>{ page++; try{ await load(); }catch(e){ $("#pmore").hidden=true; } });
+    }else{
+      const url = PAGES[h], slug = url.replace(/\/$/,"").split("/").pop();
+      const sv = SERVICES.find(s=>s.route===h); title.textContent = sv ? sv[lang][0] : "";
+      open.href = url;
+      const r = await wpGet(`pages?slug=${slug}&_fields=title,content,link`);
+      if(tok!==nTok) return;
+      const norm = u=>u.replace(/\/$/,"");
+      const p = r.find(x=>norm(x.link)===norm(url)) || r[0];
+      if(!p) throw new Error("not found");
+      const html = clean(p.content.rendered);
+      if(!plain(html)) throw new Error("empty");
+      body.innerHTML = `<article class="nbody">${html}</article>`;
+    }
+  }catch(e){
+    if(tok!==nTok) return;
+    body.innerHTML = `<div class="nerr">${T[lang].nErr}</div>`;
+  }
+}
 function route(){
   const h=(location.hash||"").replace("#","");
-  const isEmbed=EMBED_PAGES && Object.prototype.hasOwnProperty.call(PAGES,h);
-  const id = isEmbed ? "embed" : (["social","faq"].includes(h) ? h : "home");
+  const hasPage=Object.prototype.hasOwnProperty.call(PAGES,h);
+  const isEmbed=EMBED_PAGES && hasPage;
+  const isNative=!EMBED_PAGES && NATIVE_PAGES && (hasPage || /^post-\d+$/.test(h));
+  const id = isEmbed ? "embed" : isNative ? "native" : (["social","faq"].includes(h) ? h : "home");
   document.querySelectorAll(".view").forEach(v=>v.classList.toggle("on",v.id==="v-"+id));
   document.documentElement.classList.toggle("embed-on",isEmbed);
   if(isEmbed) openEmbed(PAGES[h]); else closeEmbed();
+  if(isNative) showNative(h);
   const back=$("#backBtn");
   if(id==="home"){ back.style.visibility="hidden"; back.removeAttribute("data-inner"); }
   else { back.style.visibility="visible"; back.href="#"; back.setAttribute("data-inner","1"); }
   window.scrollTo(0,0);
 }
 $("#backBtn").addEventListener("click",e=>{
-  if(e.currentTarget.getAttribute("data-inner")){ e.preventDefault(); history.pushState("",document.title,location.pathname+location.search); route(); }
+  if(e.currentTarget.getAttribute("data-inner")){ e.preventDefault();
+    if(/^#post-/.test(location.hash)){ location.hash="#blog"; }
+    else { history.pushState("",document.title,location.pathname+location.search); route(); } }
 });
 window.addEventListener("hashchange",route);
 
