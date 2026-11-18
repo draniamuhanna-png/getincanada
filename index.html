@@ -99,6 +99,9 @@ svg.f{fill:currentColor;stroke:none}
 .cta .ico{font-size:34px;flex:none}
 .cta b{display:block;font-size:22px;font-weight:800;line-height:1.25}
 .cta span{display:block;font-size:11px;opacity:.95;margin-top:1px}
+.cta>div{min-width:0}
+html[lang="en"] .cta b{font-size:clamp(12.5px,4.1vw,17px);white-space:nowrap;letter-spacing:-.01em}
+html[lang="en"] .cta span{font-size:10.5px}
 
 /* list buttons */
 .grid2{display:grid;gap:8px;margin-top:18px}
@@ -213,6 +216,7 @@ html.embed-on .wrap{padding-bottom:0}
 .pcard span{display:block;font-size:12px;color:#555;line-height:1.6}
 .morebtn{display:block;margin:14px auto 0;border:0;border-radius:8px;background:var(--soft);padding:11px 26px;font-weight:700;font-size:13.5px;color:#333}
 .nopen{display:block;margin:22px 0 8px;text-align:center;background:var(--brand);color:#fff;border-radius:8px;padding:12px;font-weight:700;font-size:13.5px}
+.nnote{background:#fff6e5;border-radius:8px;padding:9px 12px;font-size:12.5px;color:#7a5200;margin:0 0 14px;line-height:1.7}
 .nerr{text-align:center;color:#555;font-size:14px;line-height:1.9;padding-top:50px}
 
 /* sub pages */
@@ -457,7 +461,7 @@ const T = {
     intro:"مجموعة من خبراء الاستشارة في الهجرة والأعمال التجارية والاستشارات الأكاديمية لتلبية احتياجات كل فرد ومنظمة تستخدم خدماتنا.",
     cta:"احجز استشارتك الآن!", cta2:"تأمين جلسة استراتيجية الهجرة المرخصة",
     soc:"وسائل التواصل الاجتماعي", soc2:"إنستغرام، فيسبوك، لينكدإن — كل صفحاتنا بمكان واحد",
-    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", more:"عرض المزيد", nErr:"تعذّر عرض هذه الصفحة هنا. يمكنك فتحها من الموقع الرسمي.", openPage:"فتح الصفحة في المتصفح ↗",
+    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", more:"عرض المزيد", nEn:"هذا المحتوى متوفر حاليًا باللغة الإنجليزية فقط.", nErr:"تعذّر عرض هذه الصفحة هنا. يمكنك فتحها من الموقع الرسمي.", openPage:"فتح الصفحة في المتصفح ↗",
     faq:"أسئلة شائعة", faq2:"كل ما تحتاج السؤال عنه في مكان واحد",
     vids:"أهم الفيديوهات", web:"الموقع الرسمي", web2:"قم بزيارة موقعنا الرسمي",
     socT:"قنوات التواصل", socS:"تابعنا وتواصل معنا",
@@ -473,7 +477,7 @@ const T = {
     intro:"A team of immigration, business and academic consulting experts meeting the needs of every individual and organization using our services.",
     cta:"Book Your Consultation Now!", cta2:"Secure a licensed immigration strategy session",
     soc:"Social Media", soc2:"Instagram, Facebook, LinkedIn — all our pages in one place",
-    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", more:"Load more", nErr:"We couldn\u2019t display this page here. You can open it on the official website.", openPage:"Open page in browser ↗",
+    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", more:"Load more", nEn:"", nErr:"We couldn\u2019t display this page here. You can open it on the official website.", openPage:"Open page in browser ↗",
     faq:"FAQs", faq2:"Everything you need to ask, in one place",
     vids:"Top Videos", web:"Official Website", web2:"Visit our official website",
     socT:"Our Channels", socS:"Follow us and get in touch",
@@ -641,6 +645,7 @@ $("#langBtn").addEventListener("click",()=>{
   lang = lang==="ar" ? "en" : "ar";
   try{ localStorage.setItem("gic-lang",lang); }catch(e){}
   applyLang();
+  if($("#v-native").classList.contains("on")) showNative((location.hash||"").replace("#",""));
 });
 
 const ef=$("#ef"), embedBox=$("#embed");
@@ -686,26 +691,87 @@ function clean(html){
   doc.body.querySelectorAll("p,div,span,h1,h2,h3,h4,h5,h6,li").forEach(el=>{ if(!el.textContent.trim() && !el.querySelector("img")) el.remove(); });
   return doc.body.innerHTML;
 }
+// صفحات النسخة العربية من الموقع (اختياري): الصقي رابط الصفحة العربية المقابلة لكل قسم ليُعرض بالعربي بدقة.
+// مثال: "immigration": "https://getincanada.ca/ar/اسم-الصفحة/"  — اتركيها فارغة وسيحاول الموقع إيجاد الترجمة تلقائيًا.
+const PAGES_AR = { "immigration":"", "express-entry":"", "asylum":"", "blog":"" };
+const WP_AR_VARIANTS = [
+  { base: WP_API, extra: "&lang=ar" },
+  { base: "https://getincanada.ca/ar/wp-json/wp/v2/", extra: "" }
+];
+const hasArabic = t => /[\u0600-\u06FF]/.test(t||"");
+const normUrl = u => (u||"").replace(/\/$/,"");
+const slugOf = u => { const seg=normUrl(u).split("/").pop(); try{ return encodeURIComponent(decodeURIComponent(seg)); }catch(e){ return seg; } };
+async function wpGetFrom(base,p){
+  const key=base+p; if(wpCache[key]) return wpCache[key];
+  const r = await fetch(base+p,{headers:{Accept:"application/json"}});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const j = await r.json(); wpCache[key]=j; return j;
+}
+const POST_QS = (per,page)=>`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,title,excerpt,_links,_embedded`;
+async function fetchPostList(page,per,ctx){
+  // يعيد { list, english } ويحفظ المتغير الناجح في ctx
+  if(ctx.v){
+    const l = await wpGetFrom(ctx.v.base, POST_QS(per,page)+ctx.v.extra);
+    return { list: ctx.v.ar ? l : l.filter(p=>!hasArabic(plain(p.title.rendered))), english: !ctx.v.ar && lang==="ar" };
+  }
+  if(lang==="ar"){
+    for(const v of WP_AR_VARIANTS){
+      try{
+        const l = await wpGetFrom(v.base, POST_QS(per,page)+v.extra);
+        const n = l.filter(p=>hasArabic(plain(p.title.rendered))).length;
+        if(l.length && n/l.length>=.5){ ctx.v={...v,ar:true}; return { list:l, english:false }; }
+      }catch(e){}
+    }
+  }
+  ctx.v = { base:WP_API, extra:"", ar:false };
+  const l = await wpGetFrom(WP_API, POST_QS(per,page));
+  return { list: l.filter(p=>!hasArabic(plain(p.title.rendered))), english: lang==="ar" };
+}
+async function fetchSectionPage(h){
+  const url = PAGES[h];
+  const pick = (r,u)=> (r||[]).find(x=>normUrl(x.link)===normUrl(u)) || (r||[])[0] || null;
+  if(lang==="ar"){
+    const arUrl = PAGES_AR[h];
+    if(arUrl){
+      try{ const p = pick(await wpGet(`pages?slug=${slugOf(arUrl)}&lang=ar&_fields=title,content,link`),arUrl); if(p) return {p,english:false}; }catch(e){}
+    }
+    let base=null;
+    try{ base = pick(await wpGet(`pages?slug=${slugOf(url)}&_fields=id,title,content,link,translations`),url); }catch(e){}
+    if(base && base.translations && base.translations.ar){
+      try{ const p = await wpGet(`pages/${base.translations.ar}?_fields=title,content,link`); if(p) return {p,english:false}; }catch(e){}
+    }
+    for(const v of WP_AR_VARIANTS){
+      try{ const r = await wpGetFrom(v.base,`pages?slug=${slugOf(url)}${v.extra}&_fields=title,content,link`); const p=pick(r,url); if(p && hasArabic(plain(p.content.rendered).slice(0,400))) return {p,english:false}; }catch(e){}
+    }
+    if(base) return {p:base,english:true};
+  }
+  const r = await wpGet(`pages?slug=${slugOf(url)}&_fields=title,content,link`);
+  const p = pick(r,url); if(!p) throw new Error("not found");
+  return {p,english:false};
+}
 let nTok = 0;
 async function showNative(h){
   const tok=++nTok, body=$("#nBody"), title=$("#nTitle"), open=$("#nOpen");
   body.innerHTML = `<div class="nload"><div class="spinner"></div><span>${T[lang].loading}</span></div>`;
   title.textContent = ""; open.href = SITE;
+  const note = on => on ? `<div class="nnote">${T[lang].nEn}</div>` : "";
   try{
     const m = h.match(/^post-(\d+)$/);
     if(m){
       open.href = PAGES.blog;
       const p = await wpGet(`posts/${m[1]}?_fields=title,content,link`);
       if(tok!==nTok) return;
-      title.textContent = plain(p.title.rendered); open.href = p.link;
+      title.textContent = plain(p.title.rendered); title.setAttribute("dir","auto"); open.href = p.link;
       body.innerHTML = `<article class="nbody">${clean(p.content.rendered)}</article>`;
     }else if(h==="blog"){
-      title.textContent = T[lang].art; open.href = PAGES.blog;
-      body.innerHTML = `<div id="plist"></div><button class="morebtn" id="pmore" type="button" hidden>${T[lang].more}</button>`;
-      let page = 1; const per = 10;
+      title.textContent = T[lang].art; title.removeAttribute("dir");
+      open.href = (lang==="ar" && PAGES_AR.blog) || PAGES.blog;
+      body.innerHTML = `<div id="nnote"></div><div id="plist"></div><button class="morebtn" id="pmore" type="button" hidden>${T[lang].more}</button>`;
+      let page = 1; const per = 10, ctx = {};
       const load = async ()=>{
-        const list = await wpGet(`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,title,excerpt,_links,_embedded`);
+        const {list,english} = await fetchPostList(page,per,ctx);
         if(tok!==nTok) return;
+        if(page===1){ if(!list.length) throw new Error("empty"); $("#nnote").innerHTML = note(english); }
         list.forEach(p=>{
           const a=document.createElement("a"); a.className="pcard"; a.href="#post-"+p.id;
           const med=p._embedded&&p._embedded["wp:featuredmedia"]&&p._embedded["wp:featuredmedia"][0];
@@ -718,22 +784,17 @@ async function showNative(h){
           d.append(b,sp); a.appendChild(d); $("#plist").appendChild(a);
         });
         $("#pmore").hidden = list.length<per;
-        if(list.length===0 && page===1) throw new Error("empty");
       };
       await load();
       $("#pmore").addEventListener("click",async()=>{ page++; try{ await load(); }catch(e){ $("#pmore").hidden=true; } });
     }else{
-      const url = PAGES[h], slug = url.replace(/\/$/,"").split("/").pop();
-      const sv = SERVICES.find(s=>s.route===h); title.textContent = sv ? sv[lang][0] : "";
-      open.href = url;
-      const r = await wpGet(`pages?slug=${slug}&_fields=title,content,link`);
+      const sv = SERVICES.find(s=>s.route===h); title.textContent = sv ? sv[lang][0] : ""; title.removeAttribute("dir");
+      open.href = (lang==="ar" && PAGES_AR[h]) || PAGES[h];
+      const {p,english} = await fetchSectionPage(h);
       if(tok!==nTok) return;
-      const norm = u=>u.replace(/\/$/,"");
-      const p = r.find(x=>norm(x.link)===norm(url)) || r[0];
-      if(!p) throw new Error("not found");
       const html = clean(p.content.rendered);
       if(!plain(html)) throw new Error("empty");
-      body.innerHTML = `<article class="nbody">${html}</article>`;
+      body.innerHTML = note(english)+`<article class="nbody">${html}</article>`;
     }
   }catch(e){
     if(tok!==nTok) return;
