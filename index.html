@@ -465,7 +465,7 @@ const T = {
     intro:"مجموعة من خبراء الاستشارة في الهجرة والأعمال التجارية والاستشارات الأكاديمية لتلبية احتياجات كل فرد ومنظمة تستخدم خدماتنا.",
     cta:"احجز استشارتك الآن!", cta2:"تأمين جلسة استراتيجية الهجرة المرخصة",
     soc:"وسائل التواصل الاجتماعي", soc2:"إنستغرام، فيسبوك، لينكدإن — كل صفحاتنا بمكان واحد",
-    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", more:"عرض المزيد", nEn:"هذا المحتوى متوفر حاليًا باللغة الإنجليزية فقط.", nErr:"تعذّر عرض هذه الصفحة هنا. يمكنك فتحها من الموقع الرسمي.", openPage:"فتح الصفحة في المتصفح ↗",
+    art:"مقالاتنا", art2:"كل ما تريد معرفته عن الهجرة والعيش في كندا", loading:"جاري التحميل…", more:"عرض المزيد", nEn:"هذا المحتوى متوفر حاليًا باللغة الإنجليزية فقط.", nErr:"تعذّر عرض هذه الصفحة هنا. يمكنك فتحها من الموقع الرسمي.", openPage:"فتح الصفحة في المتصفح ↗", openPost:"قراءة المقال في الموقع الأصلي ↗",
     faq:"أسئلة شائعة", faq2:"كل ما تحتاج السؤال عنه في مكان واحد",
     vids:"أهم الفيديوهات", web:"الموقع الرسمي", web2:"قم بزيارة موقعنا الرسمي",
     socT:"قنوات التواصل", socS:"تابعنا وتواصل معنا",
@@ -481,7 +481,7 @@ const T = {
     intro:"A team of immigration, business and academic consulting experts meeting the needs of every individual and organization using our services.",
     cta:"Book Your Consultation Now!", cta2:"Secure a licensed immigration strategy session",
     soc:"Social Media", soc2:"Instagram, Facebook, LinkedIn — all our pages in one place",
-    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", more:"Load more", nEn:"", nErr:"We couldn\u2019t display this page here. You can open it on the official website.", openPage:"Open page in browser ↗",
+    art:"Our Articles", art2:"Everything you want to know about immigrating to and living in Canada", loading:"Loading…", more:"Load more", nEn:"", nErr:"We couldn\u2019t display this page here. You can open it on the official website.", openPage:"Open page in browser ↗", openPost:"Read the article on the original website ↗",
     faq:"FAQs", faq2:"Everything you need to ask, in one place",
     vids:"Top Videos", web:"Official Website", web2:"Visit our official website",
     socT:"Our Channels", socS:"Follow us and get in touch",
@@ -698,7 +698,13 @@ function clean(html){
     if(el.tagName==="A"){
       const h = el.getAttribute("href")||"";
       if(/^\s*javascript:/i.test(h)) el.removeAttribute("href");
-      else { el.setAttribute("href",absUrl(h)); el.setAttribute("target","_blank"); el.setAttribute("rel","noopener"); }
+      else {
+        const m = mapLink(h, el.textContent);
+        el.setAttribute("href",m.href);
+        if(m.internal){ el.removeAttribute("target"); el.removeAttribute("rel"); }
+        else if(/^(mailto|tel):/i.test(m.href)){ el.removeAttribute("target"); }
+        else { el.setAttribute("target","_blank"); el.setAttribute("rel","noopener"); if(m.tryPost) el.setAttribute("data-try","1"); }
+      }
     }
     if(/^(P|LI|H1|H2|H3|H4|H5|H6|BLOCKQUOTE|TD|TH)$/.test(el.tagName)) el.setAttribute("dir","auto");
   });
@@ -712,11 +718,78 @@ const WP_AR_VARIANTS = [
   { base: "https://getincanada.ca/ar/wp-json/wp/v2/", extra: "" },
   { base: WP_API, extra: "&lang=ar" }
 ];
+/* ===== ربط الروابط داخل المحتوى بصفحات موقعنا ===== */
+const SITE_HOST = /^(www\.)?getincanada\.ca$/i;
+const BOOK_HOST = /^booking\.getincanada\.ca$/i;
+function pathKey(u){
+  try{
+    const x = new URL(u,"https://getincanada.ca/");
+    let p = x.pathname; try{ p = decodeURIComponent(p); }catch(e){}
+    p = p.replace(/\/+$/,"").replace(/^\/ar(?=\/|$)/,"").toLowerCase();
+    return { host:x.hostname, path:p };
+  }catch(e){ return null; }
+}
+// مسار كل قسم عندنا (الإنجليزي والعربي) → اسم الصفحة داخل موقعنا
+const ROUTE_BY_PATH = {};
+Object.keys(PAGES).forEach(k=>{ [PAGES[k],PAGES_AR[k]].forEach(u=>{ if(u){ const o=pathKey(u); if(o && o.path) ROUTE_BY_PATH[o.path]=k; } }); });
+const BOOK_TEXT = /(احجز|حجز|book).{0,25}(استشار|consult)|مستشاري الهجرة|immigration consultants?/i;
+const BOOK_PATH = /(^|\/)(book|booking|book-[a-z-]*|consultation|appointment|schedule|حجز[^\/]*|احجز[^\/]*)$/i;
+function mapLink(h,text){
+  const abs = absUrl(h);
+  if(!/^https?:/i.test(abs)) return { href:abs||h, internal:false };
+  const o = pathKey(abs); if(!o) return { href:abs, internal:false };
+  if(BOOK_HOST.test(o.host)) return { href:"booking.html", internal:true };      // صفحة الحجز
+  if(!SITE_HOST.test(o.host)) return { href:abs, internal:false };                // مواقع أخرى (حكومية…) تبقى خارجية
+  if(ROUTE_BY_PATH[o.path]) return { href:"#"+ROUTE_BY_PATH[o.path], internal:true }; // قسم موجود عندنا
+  if(BOOK_TEXT.test(text||"") || (o.path.split("/").filter(Boolean).length<=2 && BOOK_PATH.test(o.path))) return { href:"booking.html", internal:true };
+  return { href:abs, internal:false, tryPost:o.path!=="" };                        // قد يكون مقالًا → يُفحص بالخلفية
+}
+/* مقال: المصدر (نسخة عربية/إنجليزية) لكل رقم يُحفظ ليُجلب من الواجهة الصحيحة */
+const POST_SRC = {}, POST_RES = {};
+const MAIN_V = { base:WP_API, extra:"" };
+const allVariants = () => lang==="ar" ? [...WP_AR_VARIANTS, MAIN_V] : [MAIN_V, ...WP_AR_VARIANTS];
+async function fetchPost(id){
+  const vs = []; const seen = new Set();
+  [POST_SRC[id]&&POST_SRC[id].v, ...allVariants()].forEach(v=>{ if(v){ const k=v.base+v.extra; if(!seen.has(k)){ seen.add(k); vs.push(v); } } });
+  let last;
+  for(const v of vs){
+    try{ const p = await wpGetFrom(v.base,`posts/${id}?_fields=id,title,content,link${v.extra}`); if(p && p.content){ POST_SRC[id]={v,link:p.link}; return p; } }catch(e){ last=e; }
+  }
+  throw last||new Error("not found");
+}
+function resolvePost(url){
+  if(POST_RES[url]) return POST_RES[url];
+  return (POST_RES[url] = (async()=>{
+    const slug = slugOf(url); if(!slug) return null;
+    for(const v of allVariants()){
+      try{
+        const r = await wpGetFrom(v.base,`posts?slug=${slug}${v.extra}&_fields=id,link`);
+        if(r && r.length){ POST_SRC[r[0].id]={v,link:r[0].link}; return r[0].id; }
+      }catch(e){}
+    }
+    return null;
+  })());
+}
+// الروابط التي قد تكون مقالات: نبحث عنها بالخلفية، فإن وُجدت تُفتح داخل موقعنا وإلا تبقى للموقع الأصلي
+async function upgradePostLinks(root,tok){
+  const as = [...root.querySelectorAll("a[data-try]")].slice(0,16);
+  let i = 0;
+  const worker = async()=>{
+    while(i<as.length){
+      const a = as[i++];
+      try{
+        const id = await resolvePost(a.href);
+        if(id && tok===nTok){ a.setAttribute("href","#post-"+id); a.removeAttribute("target"); a.removeAttribute("rel"); a.removeAttribute("data-try"); }
+      }catch(e){}
+    }
+  };
+  await Promise.all([worker(),worker(),worker()]);
+}
 const hasArabic = t => /[\u0600-\u06FF]/.test(t||"");
 const normUrl = u => (u||"").replace(/\/$/,"");
 const slugOf = u => { const seg=normUrl(u).split("/").pop(); try{ return encodeURIComponent(decodeURIComponent(seg)); }catch(e){ return seg; } };
 const wpGetFrom = (base,p) => wpFetchJSON(base+p);
-const POST_QS = (per,page)=>`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,title,excerpt,_links,_embedded`;
+const POST_QS = (per,page)=>`posts?per_page=${per}&page=${page}&_embed=wp:featuredmedia&_fields=id,link,title,excerpt,_links,_embedded`;
 async function fetchPostList(page,per,ctx){
   // يعيد { list, english } ويحفظ المتغير الناجح في ctx
   if(ctx.v){
@@ -765,16 +838,18 @@ async function showNative(h){
   const tok=++nTok, body=$("#nBody"), title=$("#nTitle"), open=$("#nOpen");
   const sk = '<div class="pcard"><i class="skimg"></i><div style="flex:1"><i class="skl"></i><i class="skl s"></i></div></div>'.repeat(5);
   body.innerHTML = h==="blog" ? sk : `<div class="nload"><div class="spinner"></div><span>${T[lang].loading}</span></div>`;
-  title.textContent = ""; open.href = SITE;
+  title.textContent = ""; open.href = SITE; open.firstElementChild.textContent = T[lang].openPage;
   const note = on => on ? `<div class="nnote">${T[lang].nEn}</div>` : "";
   try{
     const m = h.match(/^post-(\d+)$/);
     if(m){
-      open.href = PAGES.blog;
-      const p = await wpGet(`posts/${m[1]}?_fields=title,content,link`);
+      open.href = (POST_SRC[m[1]]&&POST_SRC[m[1]].link) || PAGES.blog;
+      open.firstElementChild.textContent = T[lang].openPost;
+      const p = await fetchPost(m[1]);
       if(tok!==nTok) return;
       title.textContent = plain(p.title.rendered); title.setAttribute("dir","auto"); open.href = p.link;
       body.innerHTML = `<article class="nbody">${clean(p.content.rendered)}</article>`;
+      upgradePostLinks(body,tok);
     }else if(h==="blog"){
       title.textContent = T[lang].art; title.removeAttribute("dir");
       open.href = (lang==="ar" && PAGES_AR.blog) || PAGES.blog;
@@ -786,6 +861,7 @@ async function showNative(h){
         if(page===1){ if(!list.length) throw new Error("empty"); $("#nnote").innerHTML = note(english); }
         list.forEach(p=>{
           const a=document.createElement("a"); a.className="pcard"; a.href="#post-"+p.id;
+          POST_SRC[p.id]={ v: ctx.v?{base:ctx.v.base,extra:ctx.v.extra}:null, link:p.link };
           const med=p._embedded&&p._embedded["wp:featuredmedia"]&&p._embedded["wp:featuredmedia"][0];
           const sz=med&&med.media_details&&med.media_details.sizes;
           const img=(sz&&sz.medium&&sz.medium.source_url)||(med&&med.source_url)||"";
@@ -807,13 +883,17 @@ async function showNative(h){
       const html = clean(p.content.rendered);
       if(!plain(html)) throw new Error("empty");
       body.innerHTML = note(english)+`<article class="nbody">${html}</article>`;
+      upgradePostLinks(body,tok);
     }
   }catch(e){
     if(tok!==nTok) return;
     body.innerHTML = `<div class="nerr">${T[lang].nErr}</div>`;
   }
 }
+const stk = [];
 function route(){
+  const cur = location.hash||"";
+  if(stk.length>1 && stk[stk.length-2]===cur) stk.pop(); else if(stk[stk.length-1]!==cur) stk.push(cur);
   const h=(location.hash||"").replace("#","");
   const hasPage=Object.prototype.hasOwnProperty.call(PAGES,h);
   const isEmbed=EMBED_PAGES && hasPage;
@@ -830,7 +910,8 @@ function route(){
 }
 $("#backBtn").addEventListener("click",e=>{
   if(e.currentTarget.getAttribute("data-inner")){ e.preventDefault();
-    if(/^#post-/.test(location.hash)){ location.hash="#blog"; }
+    if(stk.length>1){ history.back(); }
+    else if(/^#post-/.test(location.hash)){ location.hash="#blog"; }
     else { history.pushState("",document.title,location.pathname+location.search); route(); } }
 });
 window.addEventListener("hashchange",route);
