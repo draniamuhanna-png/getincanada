@@ -260,7 +260,7 @@ footer{margin-top:26px;text-align:center;font-size:12px;color:#777}
 
 /* أيقونات التواصل السريع */
 .qa{position:relative;z-index:6;direction:ltr;display:flex;justify-content:space-between;align-items:center;width:168px;height:50px;margin:22px auto 0;touch-action:pan-y}
-.qb{width:42px;height:42px;border-radius:50%;border:0;padding:0;background:#dcdcdc;color:#333;display:flex;align-items:center;justify-content:center;font-size:21px;
+.qb{cursor:pointer;width:42px;height:42px;border-radius:50%;border:0;padding:0;background:#dcdcdc;color:#333;display:flex;align-items:center;justify-content:center;font-size:21px;
   transform:translate(var(--x,0px),0);transition:transform .45s ease,background-color .35s ease,color .35s ease,box-shadow .35s ease}
 .qb.on{background:var(--brand);color:#fff;transform:translate(var(--x,0px),-10px) scale(1.19);box-shadow:0 8px 18px rgba(214,0,11,.3);z-index:2}
 .qb.wa.on{background:#25d366;box-shadow:0 8px 18px rgba(37,211,102,.35)}
@@ -270,6 +270,7 @@ footer{margin-top:26px;text-align:center;font-size:12px;color:#777}
   -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
   transition:opacity .3s ease,transform .3s ease}
 .qtip.on{opacity:1;transform:translate(-50%,0)}
+.qtip.mail.on,.qtip.wa.on{pointer-events:auto;cursor:pointer}
 .qtip.clock{background:rgba(214,0,11,.9);border-color:rgba(255,255,255,.25);color:#fff;padding:12px 22px}
 .qtip .qv{display:block;letter-spacing:.2px}
 .qh{display:flex;align-items:stretch;gap:18px}
@@ -574,7 +575,7 @@ let lang = "ar";
 try{ lang = localStorage.getItem("gic-lang") || "ar"; }catch(e){}
 const $ = s => document.querySelector(s);
 
-let svcIdx = -1;
+let svcIdx = -1, svcResetAt = 0;
 function renderServices(){
   const box = $("#services"); box.innerHTML = "";
   SERVICES.forEach((s,idx)=>{
@@ -610,13 +611,19 @@ function pickActive(){
 let scrollT;
 $("#services").addEventListener("scroll",()=>{
   clearTimeout(scrollT);
-  scrollT=setTimeout(()=>setActive(pickActive()),120); // لا يتغير اللون إلا بعد استقرار التمرير
+  scrollT=setTimeout(()=>{ if(Date.now()-svcResetAt<600) return; setActive(pickActive()); },120); // لا يتغير اللون إلا بعد استقرار التمرير
 },{passive:true});
 { // يصبح القسم متفاعلًا عند مرور العميل (ماوس) أو لمسه
   const sv=$("#services");
   const hit=e=>{ const c=e.target.closest&&e.target.closest(".svc"); if(c) setActive([...sv.children].indexOf(c)); };
   sv.addEventListener("pointerover",e=>{ if(e.pointerType==="mouse") hit(e); });
   sv.addEventListener("pointerdown",hit,{passive:true});
+  // عند الانتقال للأعلى أو للأسفل وخروج القسم من الشاشة يعود لحالة السكون الأولى
+  if("IntersectionObserver" in window){
+    new IntersectionObserver(es=>es.forEach(en=>{
+      if(en.intersectionRatio<0.35 && (svcIdx!==-1 || sv.scrollLeft!==0)){ svcResetAt=Date.now(); setActive(-1); sv.scrollLeft=0; }
+    }),{threshold:[0,0.35,1]}).observe(sv.parentElement);
+  }
 }
 
 function renderSocials(){
@@ -1031,30 +1038,23 @@ document.addEventListener("pointerdown",e=>{
     else if(i===2) window.open("https://wa.me/"+CONTACT.phone,"_blank","noopener");
   }
   const labels=()=>bs.forEach((b,i)=>b.setAttribute("aria-label",CONTACT[lang].l[i]));
-  qa.addEventListener("pointerdown",e=>{
-    lastType=e.pointerType||"mouse"; if(lastType==="mouse") return;
-    const b=e.target.closest(".qb"), vi=b?bs.indexOf(b):zone(e);
-    exec=(cur===vi); if(!exec) activate(vi);   // اللمسة الأولى تُظهر المعلومة، والثانية تنفّذ
-    lastZone=zone(e); drag=true;
-  });
+  let suppress=false;
+  const touchy=e=>e.pointerType==="touch"||e.pointerType==="pen";
+  // تمرير الإصبع فوق الأيقونات يُظهرها، وعند رفع الإصبع تبقى الأيقونة المختارة ثابتة
+  qa.addEventListener("pointerdown",e=>{ suppress=false; if(touchy(e)){ drag=true; lastZone=zone(e); } });
   qa.addEventListener("pointermove",e=>{
-    const z=zone(e);
-    if(e.pointerType==="mouse"){ if(z!==lastZone){ lastZone=z; activate(z); } return; }
-    if(drag && z!==lastZone){ lastZone=z; exec=false; activate(z); }   // تمرير الإصبع فوق الأيقونات
+    if(!drag||!touchy(e)) return;
+    const z=zone(e); if(z!==lastZone){ lastZone=z; suppress=true; activate(z); }
   });
   ["pointerup","pointercancel"].forEach(t=>qa.addEventListener(t,()=>{ drag=false; }));
-  qa.addEventListener("pointerleave",e=>{ if(e.pointerType==="mouse") reset(); });
-  qa.addEventListener("click",()=>{
-    if(cur<0) return;
-    if(lastType!=="mouse" && lastType!=="key" && !exec) return;
-    if(cur===0){ if(lastType!=="mouse") reset(); return; }
-    go(cur);
-  });
-  qa.addEventListener("keydown",()=>{ lastType="key"; });
-  qa.addEventListener("focusin",e=>{ const b=e.target.closest(".qb"); if(b && lastType==="key") activate(bs.indexOf(b)); });
-  qa.addEventListener("focusout",e=>{ if(lastType==="key" && !qa.contains(e.relatedTarget)) reset(); });
-  document.addEventListener("pointerdown",e=>{ if(cur>=0 && !qa.contains(e.target)) reset(); });
-  $("#langBtn").addEventListener("click",()=>{ reset(); labels(); });
+  // الضغط على أيقونة غير مختارة يختارها (وتنتقل للمنتصف وتثبت)، والضغط عليها وهي مختارة ينفّذ الإجراء
+  bs.forEach((b,i)=>b.addEventListener("click",()=>{
+    if(suppress){ suppress=false; return; }
+    if(cur!==i){ activate(i); return; }
+    if(i===0) reset(); else go(i);
+  }));
+  tip.addEventListener("click",()=>{ if(cur>0) go(cur); });   // الضغط على المستطيل نفسه ينفّذ أيضًا
+  $("#langBtn").addEventListener("click",()=>{ labels(); if(cur>=0){ tip.dir=document.documentElement.dir; tip.innerHTML=html(KEYS[cur]); } });
   labels();
   $("#fy").textContent=FOOT_YEARS;
 })();
