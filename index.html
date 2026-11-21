@@ -258,6 +258,32 @@ html[dir="rtl"] .link .num{text-align:right}
 
 footer{margin-top:26px;text-align:center;font-size:12px;color:#777}
 
+/* أيقونات التواصل السريع */
+.qa{position:relative;z-index:6;direction:ltr;display:flex;justify-content:space-between;align-items:center;width:168px;height:50px;margin:22px auto 0;touch-action:pan-y}
+.qb{width:42px;height:42px;border-radius:50%;border:0;padding:0;background:#dcdcdc;color:#333;display:flex;align-items:center;justify-content:center;font-size:21px;
+  transform:translate(var(--x,0px),0);transition:transform .45s ease,background-color .35s ease,color .35s ease,box-shadow .35s ease}
+.qb.on{background:var(--brand);color:#fff;transform:translate(var(--x,0px),-10px) scale(1.19);box-shadow:0 8px 18px rgba(214,0,11,.3);z-index:2}
+.qb.wa.on{background:#25d366;box-shadow:0 8px 18px rgba(37,211,102,.35)}
+.qtip{position:absolute;top:60px;left:50%;transform:translate(-50%,-6px);opacity:0;pointer-events:none;white-space:nowrap;
+  padding:14px 24px;border-radius:24px;font-weight:800;font-size:14px;color:#222;text-align:center;
+  background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.65);box-shadow:0 10px 30px rgba(0,0,0,.14);
+  -webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);
+  transition:opacity .3s ease,transform .3s ease}
+.qtip.on{opacity:1;transform:translate(-50%,0)}
+.qtip.clock{background:rgba(214,0,11,.9);border-color:rgba(255,255,255,.25);color:#fff;padding:12px 22px}
+.qtip .qv{display:block;letter-spacing:.2px}
+.qh{display:flex;align-items:stretch;gap:18px}
+.qh .c{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px}
+.qh small{font-size:12px;font-weight:700;opacity:.95;margin-bottom:2px}
+.qh b{font-size:19px;font-weight:800;line-height:1.25}
+.qh .qar{font-size:15px;opacity:.9}
+.qh .vl{width:1px;background:rgba(255,255,255,.35)}
+/* اسم الموقع السفلي */
+.sfoot{margin-top:40px;text-align:center}
+.sfoot .sn{display:flex;align-items:center;justify-content:center;gap:12px;color:#444;font-size:13px;letter-spacing:.6px;font-weight:500;direction:ltr}
+.sfoot .sn i{width:26px;height:1.5px;background:var(--brand);display:block}
+.sfoot small{display:block;margin-top:6px;font-size:9px;color:#aaa;letter-spacing:.5px}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 footer a{color:var(--brand);font-weight:600}
 </style>
@@ -292,6 +318,8 @@ footer a{color:var(--brand);font-weight:600}
     <symbol id="rd" viewBox="0 0 24 24"><ellipse cx="12" cy="14.2" rx="7.5" ry="5.3"/><circle cx="19.7" cy="10.8" r="1.6"/><circle cx="4.3" cy="10.8" r="1.6"/><path d="m12.2 8.9.9-4.6 3.8.9"/><circle cx="18" cy="5.5" r="1.3"/><circle cx="9.3" cy="13.5" r=".9" fill="currentColor"/><circle cx="14.7" cy="13.5" r=".9" fill="currentColor"/><path d="M9.5 16.700c1.5 1 3.5 1 5 0"/></symbol>
     <symbol id="b-ig" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="url(#igG)"/><rect x="5.2" y="5.2" width="13.6" height="13.6" rx="4" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="12" cy="12" r="3.2" fill="none" stroke="#fff" stroke-width="1.7"/><circle cx="16.5" cy="7.5" r=".95" fill="#fff"/></symbol>
     <symbol id="b-tt" viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#000"/><g transform="translate(3.6 3.6) scale(.7)"><path fill="#25f4ee" transform="translate(-.9 -.9)" d="M16.5 3c.3 2.4 1.7 3.9 4 4.100v3.100c-1.4 0-2.8-.4-4-1.200v6.100c0 3-2.4 5.4-5.4 5.400s-5.4-2.4-5.4-5.400c0-3 2.5-5.5 5.6-5.400v3.200c-1.3-.2-2.6.8-2.6 2.2 0 1.2 1 2.2 2.2 2.2 1.3 0 2.3-1 2.3-2.400V3z"/><path fill="#fe2c55" transform="translate(.9 .9)" d="M16.5 3c.3 2.4 1.7 3.9 4 4.100v3.100c-1.4 0-2.8-.4-4-1.200v6.100c0 3-2.4 5.4-5.4 5.400s-5.4-2.4-5.4-5.400c0-3 2.5-5.5 5.6-5.400v3.200c-1.3-.2-2.6.8-2.6 2.2 0 1.2 1 2.2 2.2 2.2 1.3 0 2.3-1 2.3-2.400V3z"/><path fill="#fff" d="M16.5 3c.3 2.4 1.7 3.9 4 4.100v3.100c-1.4 0-2.8-.4-4-1.200v6.100c0 3-2.4 5.4-5.4 5.400s-5.4-2.4-5.4-5.400c0-3 2.5-5.5 5.6-5.400v3.200c-1.3-.2-2.6.8-2.6 2.2 0 1.2 1 2.2 2.2 2.2 1.3 0 2.3-1 2.3-2.400V3z"/></g></symbol>
+    <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.3 2"/></symbol>
+    <symbol id="mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.6 7.2 8.4 6.3 8.4-6.3"/></symbol>
     <symbol id="play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="currentColor" stroke="none"/></symbol>
   </defs>
 </svg>
@@ -312,25 +340,36 @@ footer a{color:var(--brand);font-weight:600}
       <p data-i18n="intro">مجموعة من خبراء الاستشارة في الهجرة والأعمال التجارية والاستشارات الأكاديمية لتلبية احتياجات كل فرد ومنظمة تستخدم خدماتنا.</p>
     </section>
 
-    <section class="services-wrap">
-      <div class="services" id="services"></div>
-      <div class="dots" id="dots"></div>
-    </section>
+    <!-- أيقونات التواصل السريع: ساعات العمل / الإيميل / واتساب -->
+    <div class="qa" id="qa" role="group">
+      <button type="button" class="qb" data-k="clock"><svg class="i"><use href="#clock"/></svg></button>
+      <button type="button" class="qb" data-k="mail"><svg class="i"><use href="#mail"/></svg></button>
+      <button type="button" class="qb wa" data-k="wa"><svg class="i"><use href="#wa"/></svg></button>
+      <div class="qtip" id="qtip" role="status" aria-live="polite"></div>
+    </div>
 
-    <a class="cta" href="booking.html">
+    <a class="cta" href="https://booking.getincanada.ca/" target="_blank" rel="noopener">
       <svg class="i ico"><use href="#cal"/></svg>
       <div><b data-i18n="cta">احجز استشارتك الآن!</b><span data-i18n="cta2">تأمين جلسة استراتيجية الهجرة المرخصة</span></div>
     </a>
 
     <div class="grid2">
-      <a class="row" href="#blog">
-        <svg class="i ico"><use href="#doc"/></svg>
-        <div><b data-i18n="art">مقالاتنا</b><span data-i18n="art2">كل ما تريد معرفته عن الهجرة والعيش في كندا</span></div>
-      </a>
       <a class="row" href="#social">
         <svg class="i ico"><use href="#share"/></svg>
         <div><b data-i18n="soc">وسائل التواصل الاجتماعي</b><span data-i18n="soc2">إنستغرام وواتساب — كل قنواتنا بمكان واحد</span></div>
       </a>
+      <a class="row" href="#blog">
+        <svg class="i ico"><use href="#doc"/></svg>
+        <div><b data-i18n="art">مقالاتنا</b><span data-i18n="art2">كل ما تريد معرفته عن الهجرة والعيش في كندا</span></div>
+      </a>
+    </div>
+
+    <section class="services-wrap">
+      <div class="services" id="services"></div>
+      <div class="dots" id="dots"></div>
+    </section>
+
+    <div class="grid2">
       <a class="row" href="#faq">
         <svg class="i ico"><use href="#help"/></svg>
         <div><b data-i18n="faq">أسئلة شائعة</b><span data-i18n="faq2">كل ما تحتاج السؤال عنه في مكان واحد</span></div>
@@ -392,6 +431,7 @@ footer a{color:var(--brand);font-weight:600}
       </div>
     </div>
   </main>
+  <div class="sfoot"><div class="sn"><i></i><span>GETINCANADA.CA</span><i></i></div><small id="fy"></small></div>
 </div>
 
 <div class="modal" id="modal" aria-hidden="true">
@@ -421,6 +461,13 @@ footer a{color:var(--brand);font-weight:600}
 /* ===== قابل للتعديل ===== */
 const SITE = "https://getincanada.ca/";
 const FAQ_PAGE = "https://getincanada.ca/faqs/";
+// بيانات أيقونات التواصل السريع (ساعات العمل / الإيميل / واتساب)
+const CONTACT = {
+  email:"immigration@getincanada.ca", phone:"14389383099", phoneLabel:"+1 (438) 938-3099", hours:["09:00","16:00"],
+  ar:{ days:"أيام العمل", hrs:"ساعات العمل", d:["الاثنين","الجمعة"], l:["ساعات العمل","البريد الإلكتروني","واتساب"] },
+  en:{ days:"Working days", hrs:"Working hours", d:["Monday","Friday"], l:["Working hours","Email","WhatsApp"] }
+};
+const FOOT_YEARS = "2026 / 2027";   // النص الصغير تحت اسم الموقع
 // cover = صورة الغلاف | views = عدد المشاهدات | pinned = أيقونة التثبيت
 // (ترتيب القائمة: الأول يظهر في أقصى اليمين عند العربية)
 // likes / comments / reposts / shares / saves / caption: اختيارية، اتركيها فارغة لإخفاء الرقم
@@ -527,11 +574,12 @@ let lang = "ar";
 try{ lang = localStorage.getItem("gic-lang") || "ar"; }catch(e){}
 const $ = s => document.querySelector(s);
 
+let svcIdx = -1;
 function renderServices(){
   const box = $("#services"); box.innerHTML = "";
   SERVICES.forEach((s,idx)=>{
     const d = document.createElement("a");
-    d.className = "svc" + (idx===0 ? " active":"");
+    d.className = "svc";
     d.href = "#"+s.route;
     d.innerHTML = `<svg class="i ico"><use href="#${s.i}"/></svg><h3>${s[lang][0]}</h3><p>${s[lang][1]}</p>`;
     box.appendChild(d);
@@ -544,9 +592,10 @@ function renderServices(){
     dots.appendChild(b);
   });
   box.scrollLeft = 0;
-  setActive(0);
+  setActive(svcIdx);   // في البداية -1 = حالة السكون (لا بطاقة نشطة)
 }
 function setActive(idx){
+  svcIdx = idx;
   [...$("#services").children].forEach((c,i)=>c.classList.toggle("active",i===idx));
   [...$("#dots").children].forEach((c,i)=>c.classList.toggle("on",i===idx));
 }
@@ -563,6 +612,12 @@ $("#services").addEventListener("scroll",()=>{
   clearTimeout(scrollT);
   scrollT=setTimeout(()=>setActive(pickActive()),120); // لا يتغير اللون إلا بعد استقرار التمرير
 },{passive:true});
+{ // يصبح القسم متفاعلًا عند مرور العميل (ماوس) أو لمسه
+  const sv=$("#services");
+  const hit=e=>{ const c=e.target.closest&&e.target.closest(".svc"); if(c) setActive([...sv.children].indexOf(c)); };
+  sv.addEventListener("pointerover",e=>{ if(e.pointerType==="mouse") hit(e); });
+  sv.addEventListener("pointerdown",hit,{passive:true});
+}
 
 function renderSocials(){
   $("#socials").innerHTML = SOCIALS.map(s=>
@@ -919,7 +974,7 @@ window.addEventListener("hashchange",route);
 applyLang(); route();
 
 /* تحميل مسبق لنموذج الحجز بصمت ليفتح أسرع. اجعليها false لإلغائه (يستهلك بيانات الزائر ويُحتسب زيارة في موقع الحجز) */
-const PREWARM_BOOKING = true;
+const PREWARM_BOOKING = false;
 function warmBooking(force){
   const c=navigator.connection||{};
   if(window.__bw) return;
@@ -946,6 +1001,63 @@ document.addEventListener("pointerdown",e=>{
   if(/booking\.html$/.test(h)) warmBooking(true);
   else if(h.startsWith("#")) prefetchNative(h.slice(1));
 },{passive:true});
+
+/* ===== أيقونات التواصل السريع ===== */
+(function(){
+  const qa=$("#qa"), tip=$("#qtip"), bs=[...qa.querySelectorAll(".qb")], KEYS=["clock","mail","wa"], STEP=63;
+  let cur=-1, lastZone=-1, lastType="mouse", exec=false, drag=false;
+  const arr=v=>v?'<svg class="i qar" viewBox="0 0 24 24"><path d="M12 4v16M7 9l5-5 5 5M7 15l5 5 5-5"/></svg>':'<svg class="i qar" viewBox="0 0 24 24"><path d="M4 12h16M9 7l-5 5 5 5M15 7l5 5-5 5"/></svg>';
+  const html=k=>{
+    const c=CONTACT[lang];
+    if(k==="mail") return `<span class="qv" dir="ltr">${CONTACT.email.toUpperCase()}</span>`;
+    if(k==="wa")   return `<span class="qv" dir="ltr">${CONTACT.phoneLabel}</span>`;
+    return `<div class="qh"><div class="c"><small>${c.days}</small><b>${c.d[0]}</b>${arr(1)}<b>${c.d[1]}</b></div><i class="vl"></i><div class="c"><small>${c.hrs}</small><b dir="ltr">${CONTACT.hours[0]}</b>${arr(0)}<b dir="ltr">${CONTACT.hours[1]}</b></div></div>`;
+  };
+  const zone=e=>{ const r=qa.getBoundingClientRect(); return Math.max(0,Math.min(2,Math.floor((e.clientX-r.left)/(r.width/3)))); };
+  // الأيقونة النشطة تنتقل إلى المنتصف وتبدّل مكانها مع الأيقونة التي كانت هناك
+  function activate(i){
+    if(i===cur) return; cur=i;
+    bs.forEach((b,j)=>{
+      let x=0;
+      if(i===0){ if(j===0) x=STEP; else if(j===1) x=-STEP; }
+      else if(i===2){ if(j===2) x=-STEP; else if(j===1) x=STEP; }
+      b.style.setProperty("--x",x+"px"); b.classList.toggle("on",j===i);
+    });
+    tip.className="qtip "+KEYS[i]+" on"; tip.dir=document.documentElement.dir; tip.innerHTML=html(KEYS[i]);
+  }
+  function reset(){ cur=-1; lastZone=-1; bs.forEach(b=>{ b.classList.remove("on"); b.style.setProperty("--x","0px"); }); tip.classList.remove("on"); }
+  function go(i){
+    if(i===1) location.href="mailto:"+CONTACT.email;
+    else if(i===2) window.open("https://wa.me/"+CONTACT.phone,"_blank","noopener");
+  }
+  const labels=()=>bs.forEach((b,i)=>b.setAttribute("aria-label",CONTACT[lang].l[i]));
+  qa.addEventListener("pointerdown",e=>{
+    lastType=e.pointerType||"mouse"; if(lastType==="mouse") return;
+    const b=e.target.closest(".qb"), vi=b?bs.indexOf(b):zone(e);
+    exec=(cur===vi); if(!exec) activate(vi);   // اللمسة الأولى تُظهر المعلومة، والثانية تنفّذ
+    lastZone=zone(e); drag=true;
+  });
+  qa.addEventListener("pointermove",e=>{
+    const z=zone(e);
+    if(e.pointerType==="mouse"){ if(z!==lastZone){ lastZone=z; activate(z); } return; }
+    if(drag && z!==lastZone){ lastZone=z; exec=false; activate(z); }   // تمرير الإصبع فوق الأيقونات
+  });
+  ["pointerup","pointercancel"].forEach(t=>qa.addEventListener(t,()=>{ drag=false; }));
+  qa.addEventListener("pointerleave",e=>{ if(e.pointerType==="mouse") reset(); });
+  qa.addEventListener("click",()=>{
+    if(cur<0) return;
+    if(lastType!=="mouse" && lastType!=="key" && !exec) return;
+    if(cur===0){ if(lastType!=="mouse") reset(); return; }
+    go(cur);
+  });
+  qa.addEventListener("keydown",()=>{ lastType="key"; });
+  qa.addEventListener("focusin",e=>{ const b=e.target.closest(".qb"); if(b && lastType==="key") activate(bs.indexOf(b)); });
+  qa.addEventListener("focusout",e=>{ if(lastType==="key" && !qa.contains(e.relatedTarget)) reset(); });
+  document.addEventListener("pointerdown",e=>{ if(cur>=0 && !qa.contains(e.target)) reset(); });
+  $("#langBtn").addEventListener("click",()=>{ reset(); labels(); });
+  labels();
+  $("#fy").textContent=FOOT_YEARS;
+})();
 </script>
 <script>
 /* صور الأغلفة (ثقيلة) تُحمَّل بعد ظهور الصفحة حتى لا تؤخر النصوص */
