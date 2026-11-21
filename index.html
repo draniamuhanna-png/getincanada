@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="format-detection" content="telephone=no, email=no, address=no">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Get In Canada</title>
 <link rel="preconnect" href="https://booking.getincanada.ca" crossorigin>
@@ -272,7 +273,9 @@ footer{margin-top:26px;text-align:center;font-size:12px;color:#777}
 .qtip.on{opacity:1;transform:translate(-50%,0)}
 .qtip.mail.on,.qtip.wa.on{pointer-events:auto;cursor:pointer}
 .qtip.clock{background:rgba(214,0,11,.9);border-color:rgba(255,255,255,.25);color:#fff;padding:12px 22px}
-.qtip .qv{display:block;letter-spacing:.2px}
+.qtip,.qtip *{text-decoration:none!important;-webkit-text-decoration:none!important}
+.qtip .qv{display:block;letter-spacing:.2px;-webkit-user-select:none;user-select:none}
+.qtip a[x-apple-data-detectors],.qtip [x-apple-data-detectors]{color:inherit!important;text-decoration:none!important;font:inherit!important}
 .qh{display:flex;align-items:stretch;gap:18px}
 .qh .c{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:62px}
 .qh small{font-size:12px;font-weight:700;opacity:.95;margin-bottom:2px}
@@ -618,6 +621,11 @@ $("#services").addEventListener("scroll",()=>{
   const hit=e=>{ const c=e.target.closest&&e.target.closest(".svc"); if(c) setActive([...sv.children].indexOf(c)); };
   sv.addEventListener("pointerover",e=>{ if(e.pointerType==="mouse") hit(e); });
   sv.addEventListener("pointerdown",hit,{passive:true});
+  const rest=()=>{ if(svcIdx===-1) return; svcResetAt=Date.now(); setActive(-1); };
+  // ضغط في أي مكان خارج البطاقات والنقاط → سكون
+  document.addEventListener("pointerdown",e=>{ if(!(e.target.closest&&e.target.closest(".svc,.dots"))) rest(); },{passive:true});
+  // ابتعاد الماوس عن القسم → سكون
+  sv.parentElement.addEventListener("pointerleave",e=>{ if(e.pointerType==="mouse") rest(); });
   // عند الانتقال للأعلى أو للأسفل وخروج القسم من الشاشة يعود لحالة السكون الأولى
   if("IntersectionObserver" in window){
     new IntersectionObserver(es=>es.forEach(en=>{
@@ -1030,7 +1038,7 @@ document.addEventListener("pointerdown",e=>{
       else if(i===2){ if(j===2) x=-STEP; else if(j===1) x=STEP; }
       b.style.setProperty("--x",x+"px"); b.classList.toggle("on",j===i);
     });
-    tip.className="qtip "+KEYS[i]+" on"; tip.dir=document.documentElement.dir; tip.innerHTML=html(KEYS[i]);
+    tip.className="qtip "+KEYS[i]+" on"; tip.tabIndex=i>0?0:-1; tip.setAttribute("role",i>0?"link":"status"); tip.dir=document.documentElement.dir; tip.innerHTML=html(KEYS[i]);
   }
   function reset(){ cur=-1; lastZone=-1; bs.forEach(b=>{ b.classList.remove("on"); b.style.setProperty("--x","0px"); }); tip.classList.remove("on"); }
   function go(i){
@@ -1051,9 +1059,10 @@ document.addEventListener("pointerdown",e=>{
   bs.forEach((b,i)=>b.addEventListener("click",()=>{
     if(suppress){ suppress=false; return; }
     if(cur!==i){ activate(i); return; }
-    if(i===0) reset(); else go(i);
+    if(i===0) reset();   // الأيقونة لا تنقل لأي صفحة، المستطيل النصي فقط هو الزر
   }));
-  tip.addEventListener("click",()=>{ if(cur>0) go(cur); });   // الضغط على المستطيل نفسه ينفّذ أيضًا
+  tip.addEventListener("click",()=>{ if(cur>0) go(cur); });
+  tip.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&cur>0){ e.preventDefault(); go(cur); } });
   $("#langBtn").addEventListener("click",()=>{ labels(); if(cur>=0){ tip.dir=document.documentElement.dir; tip.innerHTML=html(KEYS[cur]); } });
   labels();
   $("#fy").textContent=FOOT_YEARS;
